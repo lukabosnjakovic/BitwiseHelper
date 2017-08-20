@@ -2,6 +2,13 @@
 #include "MyBits.h"
 
 // MyBits constructions
+MyBits::MyBits()
+{
+	this->bits = NULL;
+	this->name = "";
+	this->resolution = NULL;
+}
+
 MyBits::MyBits(INT16 resolution, CString name)
 {
 	this->resolution = resolution;
@@ -20,8 +27,10 @@ MyBits::MyBits(MyBit * bits, INT16 resolution, CString name)
 // MyBits destruction
 MyBits::~MyBits()
 {
-	delete [] this->bits;
-	this->bits = NULL;
+	if (this->bits != NULL) {
+		delete[] this->bits;
+		this->bits = NULL;
+	}
 }
 
 // Helpers functions

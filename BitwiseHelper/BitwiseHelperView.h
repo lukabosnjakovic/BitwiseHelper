@@ -24,7 +24,8 @@ class CBitwiseHelperView : public CView
 protected: // create from serialization only
 	CBitwiseHelperView();
 	DECLARE_DYNCREATE(CBitwiseHelperView)
-	CButton btn[32];
+	CButton * btn;
+	CBitwiseHelperDoc *doc;
 	INT16 resolution;
 
 // Attributes
@@ -49,15 +50,18 @@ public:
 #endif
 
 protected:
+	void PrepareViewObjects();
 
 // Generated message map functions
 protected:
 	afx_msg void OnFilePrintPreview();
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
+	afx_msg	void OnBnClicked(UINT nID);
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
+protected:
 };
 
 #ifndef _DEBUG  // debug version in BitwiseHelperView.cpp

@@ -34,6 +34,7 @@ IMPLEMENT_DYNCREATE(CBitwiseHelperView, CView)
 BEGIN_MESSAGE_MAP(CBitwiseHelperView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
+	ON_CONTROL_RANGE(BN_CLICKED, 5000, 5100, &CBitwiseHelperView::OnBnClicked)
 END_MESSAGE_MAP()
 
 // CBitwiseHelperView construction/destruction
@@ -41,7 +42,6 @@ END_MESSAGE_MAP()
 CBitwiseHelperView::CBitwiseHelperView()
 {
 	// TODO: add construction code here
-	resolution = 32;
 }
 
 CBitwiseHelperView::~CBitwiseHelperView()
@@ -105,17 +105,22 @@ CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version 
 
 // CBitwiseHelperView message handlers
 
+void CBitwiseHelperView::PrepareViewObjects() 
+{
+	doc = this->GetDocument();
+	resolution = doc->bits->resolution;
+	btn = new CButton[resolution];
+}
 
 void CBitwiseHelperView::OnInitialUpdate()
 {
 	CView::OnInitialUpdate();
-
-	// TODO: Add your specialized code here and/or call the base class
+	
+	PrepareViewObjects();
 
 	CRect ControlRect;
-	INT16 i;
 	POINT p1, p2;
-	for (i = 0; i < resolution; i++) {
+	for (INT16 i = 0; i < resolution; i++) {
 		p1.x = OFFSETx + i * BTNWIDTH;
 		p1.y = OFFSETy;
 		p2.x = p1.x + BTNWIDTH;
@@ -124,6 +129,18 @@ void CBitwiseHelperView::OnInitialUpdate()
 		btn[i].Create(_T("0"),
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			ControlRect,
-			this, NULL);
+			this, 5000 + i);
 	}
+}
+
+void CBitwiseHelperView::OnBnClicked(UINT nID)
+{
+	INT16 i;
+	i = 100;
+	CString caption;
+	GetDlgItem(nID)->GetWindowTextW(caption);
+	if (caption == "0")
+		GetDlgItem(nID)->SetWindowTextW(_T("1"));
+	else
+		GetDlgItem(nID)->SetWindowTextW(_T("0"));
 }

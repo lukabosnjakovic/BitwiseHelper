@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include "MyBits.h"
 
 class CBitwiseHelperDoc : public CDocument
 {
@@ -24,8 +25,7 @@ protected: // create from serialization only
 
 // Attributes
 public:
-	char * bit;
-	INT16 resolution;
+	MyBits * bits;
 
 // Operations
 public:
@@ -34,6 +34,7 @@ public:
 public:
 	virtual BOOL OnNewDocument();
 	virtual void Serialize(CArchive& ar);
+
 #ifdef SHARED_HANDLERS
 	virtual void InitializeSearchContent();
 	virtual void OnDrawThumbnail(CDC& dc, LPRECT lprcBounds);

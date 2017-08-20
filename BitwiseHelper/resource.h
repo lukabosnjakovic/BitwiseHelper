@@ -27,11 +27,6 @@
 #define IDB_BITMAP1                     317
 #define ID_WRITE_PASTEASHYPERLINK       32770
 #define ID_NEW                          32771
-#define ID_BUTTON3                      32772
-#define ID_BUTTON2                      32773
-#define ID_BUTTON4                      32774
-#define ID_BUTTON5                      32775
-#define ID_BUTTON6                      32776
 
 // Next default values for new objects
 //

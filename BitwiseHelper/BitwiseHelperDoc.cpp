@@ -41,11 +41,15 @@ END_MESSAGE_MAP()
 CBitwiseHelperDoc::CBitwiseHelperDoc()
 {
 	// TODO: add one-time construction code here
-
+	this->bits = new MyBits(16, _T("New Bits"));
 }
 
 CBitwiseHelperDoc::~CBitwiseHelperDoc()
 {
+	/*if (this->bits != NULL) {
+		delete[] bits;
+		bits = NULL;
+	}*/
 }
 
 BOOL CBitwiseHelperDoc::OnNewDocument()
@@ -55,6 +59,7 @@ BOOL CBitwiseHelperDoc::OnNewDocument()
 
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
+	
 
 	return TRUE;
 }
