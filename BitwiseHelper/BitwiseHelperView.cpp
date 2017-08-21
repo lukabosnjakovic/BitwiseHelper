@@ -35,6 +35,7 @@ BEGIN_MESSAGE_MAP(CBitwiseHelperView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_CONTROL_RANGE(BN_CLICKED, 5000, 5100, &CBitwiseHelperView::OnBnClicked)
+	ON_CONTROL_RANGE(BN_CLICKED, 6000, 6100, &CBitwiseHelperView::OnChkBxClicked)
 END_MESSAGE_MAP()
 
 // CBitwiseHelperView construction/destruction
@@ -107,9 +108,13 @@ CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version 
 
 void CBitwiseHelperView::PrepareViewObjects() 
 {
-	doc = this->GetDocument();
-	resolution = doc->bits->resolution;
+	bits = this->GetDocument()->bits;
+	resolution =bits->resolution;
+	MSBFirst = bits->MSBFirst;
+
 	btn = new CButton[resolution];
+	labels = new CStatic[resolution];
+	checkBox = new CButton[resolution];
 }
 
 void CBitwiseHelperView::OnInitialUpdate()
@@ -117,30 +122,91 @@ void CBitwiseHelperView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	
 	PrepareViewObjects();
+	MakeButtons();
 
+}
+
+void CBitwiseHelperView::MakeButtons()
+{
 	CRect ControlRect;
-	POINT p1, p2;
+	POINT p1, p2, chp1, chp2;
+	INT16 b;
+
+	if (MSBFirst)
+		b = resolution - 1;
+	else
+		b = 0;
+
 	for (INT16 i = 0; i < resolution; i++) {
-		p1.x = OFFSETx + i * BTNWIDTH;
+		p1.x = OFFSETx + i * BTNWIDTH + i/8 * SPACER;
 		p1.y = OFFSETy;
 		p2.x = p1.x + BTNWIDTH;
-		p2.y = p1.y + BTNHEIGHT;
+		p2.y = p1.y + LABELHEIGHT;
 		ControlRect.SetRect(p1, p2);
+		CString tmp;
+		// Labels
+		tmp.Format(_T("%d"), b);
+		labels[i].Create(tmp,
+			WS_CHILD | WS_VISIBLE | SS_CENTER,
+			ControlRect,
+			this, 4000 + i);
+		if (MSBFirst)
+			b--;
+		else
+			b++;
+
+		p1.y += BTNHEIGHT - LBLBTNCORRECT;
+		p2.y += BTNHEIGHT;
+		ControlRect.SetRect(p1, p2);
+		// Buttons
 		btn[i].Create(_T("0"),
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			ControlRect,
 			this, 5000 + i);
+
+		// CheckBoxes
+		chp1.x = SPACER + OFFSETx + i / 4 * (4 * BTNWIDTH) + i / 8 * SPACER;
+		chp1.y = p2.y + SPACER + i % 4 * BTNHEIGHT;
+		chp2.x = chp1.x + 4 * BTNWIDTH;
+		chp2.y = chp1.y + BTNHEIGHT;
+		ControlRect.SetRect(chp1, chp2);
+		tmp.Format(_T("Bit %d"), i);
+		checkBox[i].Create(bits->bits[i].name,
+			WS_CHILD | WS_VISIBLE | BS_CHECKBOX,
+			ControlRect,
+			this, 6000 + i);
 	}
 }
 
 void CBitwiseHelperView::OnBnClicked(UINT nID)
 {
-	INT16 i;
-	i = 100;
 	CString caption;
-	GetDlgItem(nID)->GetWindowTextW(caption);
-	if (caption == "0")
-		GetDlgItem(nID)->SetWindowTextW(_T("1"));
+	CButton * Btn, * Chk;
+	Btn = (CButton *) GetDlgItem(nID);
+	Chk = (CButton *) GetDlgItem(nID + 1000);
+	Btn->GetWindowTextW(caption);
+
+	ButonsState(caption == "0", Btn, Chk);
+}
+
+void CBitwiseHelperView::OnChkBxClicked(UINT nID)
+{
+	CButton * Btn, *Chk;
+	Btn = (CButton *)GetDlgItem(nID - 1000);
+	Chk = (CButton *)GetDlgItem(nID);
+	ButonsState(!Chk->GetCheck(), Btn, Chk);
+}
+
+void CBitwiseHelperView::ButonsState(INT16 state, CButton * btn, CButton * chk)
+{
+	if (state)
+	{
+		btn->SetWindowTextW(_T("1"));
+		chk->SetCheck(TRUE);
+	}
 	else
-		GetDlgItem(nID)->SetWindowTextW(_T("0"));
+	{
+		btn->SetWindowTextW(_T("0"));
+		chk->SetCheck(FALSE);
+	}
 }

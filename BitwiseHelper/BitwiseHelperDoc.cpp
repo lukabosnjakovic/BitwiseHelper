@@ -41,7 +41,7 @@ END_MESSAGE_MAP()
 CBitwiseHelperDoc::CBitwiseHelperDoc()
 {
 	// TODO: add one-time construction code here
-	this->bits = new MyBits(16, _T("New Bits"));
+	this->bits = new MyBits(32, _T("New Bits"), TRUE);
 }
 
 CBitwiseHelperDoc::~CBitwiseHelperDoc()

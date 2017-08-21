@@ -18,6 +18,9 @@
 #define OFFSETy 20
 #define BTNWIDTH 30
 #define BTNHEIGHT 30
+#define LABELHEIGHT 15
+#define LBLBTNCORRECT 10
+#define SPACER 10
 
 class CBitwiseHelperView : public CView
 {
@@ -25,8 +28,12 @@ protected: // create from serialization only
 	CBitwiseHelperView();
 	DECLARE_DYNCREATE(CBitwiseHelperView)
 	CButton * btn;
-	CBitwiseHelperDoc *doc;
+	CButton * checkBox;
+	CStatic * labels;
+	MyBits * bits;
+
 	INT16 resolution;
+	INT16 MSBFirst;
 
 // Attributes
 public:
@@ -51,6 +58,8 @@ public:
 
 protected:
 	void PrepareViewObjects();
+	void MakeButtons();
+	void ButonsState(INT16 state, CButton * btn, CButton * chk);
 
 // Generated message map functions
 protected:
@@ -58,6 +67,7 @@ protected:
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg	void OnBnClicked(UINT nID);
+	afx_msg	void OnChkBxClicked(UINT nID);
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual void OnInitialUpdate();
