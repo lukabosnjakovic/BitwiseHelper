@@ -34,8 +34,8 @@ IMPLEMENT_DYNCREATE(CBitwiseHelperView, CView)
 BEGIN_MESSAGE_MAP(CBitwiseHelperView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
-	ON_CONTROL_RANGE(BN_CLICKED, 5000, 5100, &CBitwiseHelperView::OnBnClicked)
-	ON_CONTROL_RANGE(BN_CLICKED, 6000, 6100, &CBitwiseHelperView::OnChkBxClicked)
+	ON_CONTROL_RANGE(BN_CLICKED, BUTTONRANGEIDSTART, BUTTONRANGEIDSTART + BUTTONSACTIONRANGE, &CBitwiseHelperView::OnBnClicked)
+	ON_CONTROL_RANGE(BN_CLICKED, CHKBOXRANGEIDSTART, CHKBOXRANGEIDSTART + BUTTONSACTIONRANGE, &CBitwiseHelperView::OnChkBxClicked)
 END_MESSAGE_MAP()
 
 // CBitwiseHelperView construction/destruction
@@ -53,7 +53,7 @@ BOOL CBitwiseHelperView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-
+	cs.style &= ~FWS_ADDTOTITLE;
 	return CView::PreCreateWindow(cs);
 }
 
@@ -109,11 +109,11 @@ CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version 
 void CBitwiseHelperView::PrepareViewObjects() 
 {
 	bits = this->GetDocument()->bits;
-	resolution =bits->resolution;
-	MSBFirst = bits->MSBFirst;
+	resolution = bits->GetResolution();
+	MSBFirst = bits->IsMSBFirst();
 
 	btn = new CButton[resolution];
-	labels = new CStatic[resolution];
+	labels = new CStatic[resolution + 6];
 	checkBox = new CButton[resolution];
 }
 
@@ -122,6 +122,7 @@ void CBitwiseHelperView::OnInitialUpdate()
 	CView::OnInitialUpdate();
 	
 	PrepareViewObjects();
+
 	MakeButtons();
 
 }
@@ -131,6 +132,7 @@ void CBitwiseHelperView::MakeButtons()
 	CRect ControlRect;
 	POINT p1, p2, chp1, chp2;
 	INT16 b;
+	CString tmp;
 
 	if (MSBFirst)
 		b = resolution - 1;
@@ -143,13 +145,14 @@ void CBitwiseHelperView::MakeButtons()
 		p2.x = p1.x + BTNWIDTH;
 		p2.y = p1.y + LABELHEIGHT;
 		ControlRect.SetRect(p1, p2);
-		CString tmp;
-		// Labels
+
+		// Button labels
+#pragma warning "Pitati profesora kako maknuti pozadinu label-ima"
 		tmp.Format(_T("%d"), b);
 		labels[i].Create(tmp,
 			WS_CHILD | WS_VISIBLE | SS_CENTER,
 			ControlRect,
-			this, 4000 + i);
+			this, STATICRANGEIDSTART + i);
 		if (MSBFirst)
 			b--;
 		else
@@ -162,7 +165,7 @@ void CBitwiseHelperView::MakeButtons()
 		btn[i].Create(_T("0"),
 			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
 			ControlRect,
-			this, 5000 + i);
+			this, BUTTONRANGEIDSTART + i);
 
 		// CheckBoxes
 		chp1.x = SPACER + OFFSETx + i / 4 * (4 * BTNWIDTH) + i / 8 * SPACER;
@@ -171,11 +174,78 @@ void CBitwiseHelperView::MakeButtons()
 		chp2.y = chp1.y + BTNHEIGHT;
 		ControlRect.SetRect(chp1, chp2);
 		tmp.Format(_T("Bit %d"), i);
-		checkBox[i].Create(bits->bits[i].name,
+		checkBox[i].Create(bits->GetBit(i).name,
 			WS_CHILD | WS_VISIBLE | BS_CHECKBOX,
 			ControlRect,
-			this, 6000 + i);
+			this, CHKBOXRANGEIDSTART + i);
 	}
+
+	//For setting font of CStatic
+	int fontHeight = 25;
+	CFont *font = new CFont();
+	LOGFONT lf;
+	memset(&lf, 0, sizeof(LOGFONT));
+	lf.lfHeight = fontHeight;
+	//_tcscpy(lf.lfFaceName, _T("Arial"));
+	font->CreateFontIndirect(&lf);
+
+	p1.x = TOTALOFFSETx;
+	p1.y = chp2.y + TOTALOFFSETy;
+	p2.x = TOTALLBLWIDTH;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution].Create(_T("Decimal:"),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution);
+	labels[resolution].SetFont(font);
+	p1.y = p2.y + SPACER;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + 1].Create(_T("Hexadecimal:"),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + 1);
+	labels[resolution + 1].SetFont(font);
+	p1.y = p2.y + SPACER;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + 2].Create(_T("Binary:"),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + 2);
+	labels[resolution + 2].SetFont(font);
+
+	p1.x = p2.x + SPACER;
+	p1.y = chp2.y + TOTALOFFSETy;
+	p2.x = p1.x + resolution / 8 * TOTALVALWIDTH;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + 3].Create(bits->GetDecValueString(),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + 3);
+	labels[resolution + 3].SetFont(font);
+
+	p1.y = p2.y + SPACER;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + 4].Create(bits->GetHexValueString(),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + 4);
+	labels[resolution + 4].SetFont(font);
+
+	p1.y = p2.y + SPACER;
+	p2.y = p1.y + TOTALLBLHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + 5].Create(bits->GetBinValueString(),
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + 5);
+	labels[resolution + 5].SetFont(font);
+
+#pragma warning "Pitati profesora kako resize-at View prozor da pase content-u, te onemoguciti da korisnik moze resize-at view"
 }
 
 void CBitwiseHelperView::OnBnClicked(UINT nID)
@@ -183,7 +253,7 @@ void CBitwiseHelperView::OnBnClicked(UINT nID)
 	CString caption;
 	CButton * Btn, * Chk;
 	Btn = (CButton *) GetDlgItem(nID);
-	Chk = (CButton *) GetDlgItem(nID + 1000);
+	Chk = (CButton *) GetDlgItem(nID + BUTTONOBJECTRANGE);
 	Btn->GetWindowTextW(caption);
 
 	ButonsState(caption == "0", Btn, Chk);
@@ -192,21 +262,39 @@ void CBitwiseHelperView::OnBnClicked(UINT nID)
 void CBitwiseHelperView::OnChkBxClicked(UINT nID)
 {
 	CButton * Btn, *Chk;
-	Btn = (CButton *)GetDlgItem(nID - 1000);
+	Btn = (CButton *)GetDlgItem(nID - BUTTONOBJECTRANGE);
 	Chk = (CButton *)GetDlgItem(nID);
 	ButonsState(!Chk->GetCheck(), Btn, Chk);
 }
 
 void CBitwiseHelperView::ButonsState(INT16 state, CButton * btn, CButton * chk)
 {
+	INT16 index;
+	index = btn->GetDlgCtrlID();
+	index -= BUTTONRANGEIDSTART;
 	if (state)
 	{
 		btn->SetWindowTextW(_T("1"));
 		chk->SetCheck(TRUE);
+		bits->SetBit(index, 1);
 	}
 	else
 	{
 		btn->SetWindowTextW(_T("0"));
 		chk->SetCheck(FALSE);
+		bits->SetBit(index, 0);
 	}
+	UpdateTotalLabels();
+}
+
+void CBitwiseHelperView::UpdateTotalLabels()
+{
+	CStatic * bin, * dec, * hex;
+	dec = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 3);
+	hex = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 4);
+	bin = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 5);
+
+	dec->SetWindowTextW(bits->GetDecValueString());
+	hex->SetWindowTextW(bits->GetHexValueString());
+	bin->SetWindowTextW(bits->GetBinValueString());
 }

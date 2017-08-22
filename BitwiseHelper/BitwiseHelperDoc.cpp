@@ -41,7 +41,11 @@ END_MESSAGE_MAP()
 CBitwiseHelperDoc::CBitwiseHelperDoc()
 {
 	// TODO: add one-time construction code here
-	this->bits = new MyBits(32, _T("New Bits"), TRUE);
+	INT16 res;
+	res = 16;
+	CString title;
+	title.Format(_T("%d-bit Mask"), res);
+	this->bits = new MyBits(res, title, TRUE);
 }
 
 CBitwiseHelperDoc::~CBitwiseHelperDoc()
@@ -151,3 +155,18 @@ void CBitwiseHelperDoc::Dump(CDumpContext& dc) const
 
 
 // CBitwiseHelperDoc commands
+
+
+void CBitwiseHelperDoc::SetTitle(LPCTSTR lpszTitle)
+{
+	// TODO: Add your specialized code here and/or call the base class
+	CString input, output;
+	input = lpszTitle;
+	input.Replace(_T("BitwiseHelper"), _T(""));
+	if (input == "1")
+		output = this->bits->GetName();
+	else
+		output = this->bits->GetName() + _T(" (") + input + _T(")");
+
+	CDocument::SetTitle(output /*lpszTitle*/);
+}

@@ -5,7 +5,7 @@ class MyBit
 {
 	// Attributes
 public:
-	char status; // Checked/Unchecked
+	char state; // Checked/Unchecked
 	CString name;
 
 	// Operations

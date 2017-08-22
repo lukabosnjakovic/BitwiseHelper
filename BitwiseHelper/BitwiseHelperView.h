@@ -14,6 +14,12 @@
 
 #pragma once
 
+#define STATICRANGEIDSTART 4000
+#define BUTTONRANGEIDSTART 5000
+#define CHKBOXRANGEIDSTART 6000
+#define BUTTONOBJECTRANGE 1000	// Make upper 3 numbers range difference equal to this number
+#define BUTTONSACTIONRANGE 100
+
 #define OFFSETx 20
 #define OFFSETy 20
 #define BTNWIDTH 30
@@ -21,6 +27,12 @@
 #define LABELHEIGHT 15
 #define LBLBTNCORRECT 10
 #define SPACER 10
+
+#define TOTALOFFSETx OFFSETx
+#define TOTALOFFSETy (2 * SPACER)
+#define TOTALLBLWIDTH (5 * BTNWIDTH)
+#define TOTALLBLHEIGHT (0.8 * BTNHEIGHT)
+#define TOTALVALWIDTH ( 4 * BTNWIDTH)
 
 class CBitwiseHelperView : public CView
 {
@@ -60,6 +72,7 @@ protected:
 	void PrepareViewObjects();
 	void MakeButtons();
 	void ButonsState(INT16 state, CButton * btn, CButton * chk);
+	void UpdateTotalLabels();
 
 // Generated message map functions
 protected:
