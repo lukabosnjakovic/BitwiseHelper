@@ -148,7 +148,7 @@ void CBitwiseHelperView::MakeButtons()
 		ControlRect.SetRect(p1, p2);
 
 		// Button labels
-#pragma warning "Pitati profesora kako maknuti pozadinu label-ima"
+#pragma warning "Pitati profesora kako maknuti pozadinu label-ima i CEdit-ima"
 		tmp.Format(_T("%d"), b);
 		labels[i].Create(tmp,
 			WS_CHILD | WS_VISIBLE | SS_CENTER,
@@ -187,7 +187,7 @@ void CBitwiseHelperView::MakeButtons()
 		ControlRect.SetRect(chp1, chp2);
 		chkBoxNames[i].Create(WS_CHILD | WS_VISIBLE | WS_DISABLED,
 			ControlRect,
-			this, 7000 + i);
+			this, CHKNAMERANGEIDSTART + i);
 		chkBoxNames[i].SetWindowTextW(bits->GetBit(i).name);
 	}
 

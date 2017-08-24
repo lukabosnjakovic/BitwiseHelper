@@ -34,6 +34,9 @@ BEGIN_MESSAGE_MAP(CBitwiseHelperApp, CWinAppEx)
 	// Standard file based document commands
 	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
+	ON_COMMAND(ID_NEW_8_BIT, &CBitwiseHelperApp::OnNew8Bit)
+	ON_COMMAND(ID_NEW_16_BIT, &CBitwiseHelperApp::OnNew16bit)
+	ON_COMMAND(ID_NEW_32_BIT, &CBitwiseHelperApp::OnNew32Bit)
 END_MESSAGE_MAP()
 
 
@@ -140,6 +143,8 @@ BOOL CBitwiseHelperApp::InitInstance()
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
+	if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)   // actually none
+		cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
 
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
@@ -223,3 +228,21 @@ void CBitwiseHelperApp::SaveCustomState()
 }
 
 // CBitwiseHelperApp message handlers
+
+
+void CBitwiseHelperApp::OnNew8Bit()
+{
+	// TODO: Add your command handler code here
+}
+
+
+void CBitwiseHelperApp::OnNew16bit()
+{
+	// TODO: Add your command handler code here
+}
+
+
+void CBitwiseHelperApp::OnNew32Bit()
+{
+	// TODO: Add your command handler code here
+}

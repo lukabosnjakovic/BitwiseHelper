@@ -27,13 +27,20 @@
 #define IDB_BITMAP1                     317
 #define ID_WRITE_PASTEASHYPERLINK       32770
 #define ID_NEW                          32771
+#define ID_NEW_8_BIT                    32777
+#define ID_NEW_16_BIT                   32780
+#define ID_NEW_32_BIT                   32781
+#define ID_COMBO_TEMPLATE               32782
+#define ID_OPEN_TEMPLATE                32783
+#define ID_EDIT_TEMPLATE                32784
+#define ID_MSB_FIRST_CHKBOX             32786
 
 // Next default values for new objects
-//
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        318
-#define _APS_NEXT_COMMAND_VALUE         32777
+#define _APS_NEXT_COMMAND_VALUE         32788
 #define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           310
 #endif

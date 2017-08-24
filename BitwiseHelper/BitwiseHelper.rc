@@ -29,12 +29,12 @@ LANGUAGE LANG_CROATIAN, SUBLANG_DEFAULT
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE
+1 TEXTINCLUDE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE
+2 TEXTINCLUDE 
 BEGIN
     "#ifndef APSTUDIO_INVOKED\r\n"
     "#include ""targetver.h""\r\n"
@@ -44,7 +44,7 @@ BEGIN
     "\0"
 END
 
-3 TEXTINCLUDE
+3 TEXTINCLUDE 
 BEGIN
     "#define _AFX_NO_OLE_RESOURCES\r\n"
     "#define _AFX_NO_TRACKER_RESOURCES\r\n"
@@ -244,7 +244,7 @@ BEGIN
     VK_DELETE,      ID_EDIT_CUT,            VIRTKEY, SHIFT
     VK_INSERT,      ID_EDIT_COPY,           VIRTKEY, CONTROL
     VK_INSERT,      ID_EDIT_PASTE,          VIRTKEY, SHIFT
-    VK_F6,          ID_NEXT_PANE,           VIRTKEY
+    VK_F6,          ID_NEXT_PANE,           VIRTKEY 
     VK_F6,          ID_PREV_PANE,           VIRTKEY, SHIFT
 END
 
@@ -344,7 +344,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "BitwiseHelper"
+    IDR_MAINFRAME           "Bitwise Helper"
     IDR_BitwiseHelperTYPE   "\nBitwiseHelper\nBitwiseHelper\n\n\nBitwiseHelper.Document\nBitwiseHelper.Document"
     ID_WINDOW_MANAGER       "&Windows..."
 END
@@ -468,6 +468,10 @@ END
 STRINGTABLE
 BEGIN
     ID_NEW                  "New element"
+    ID_NEW_8_BIT            "Create a new 8-bit mask\nNew"
+    ID_NEW_16_BIT           "Create a new 16-bit mask\nNew"
+    ID_NEW_32_BIT           "Create a new 32-bit mask\nNew"
+    ID_OPEN_TEMPLATE        "Open a already made bit mask\nOpen Template"
 END
 
 #endif    // English (United States) resources

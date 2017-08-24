@@ -33,6 +33,7 @@ MyBits::MyBits(MyBit * bits, INT16 resolution, CString name, CCHAR MSBFirst)
 // MyBits destruction
 MyBits::~MyBits()
 {
+#pragma warning "Ovdje nikad ne dolazi, moguci memory leak?"
 	if (this->bits != NULL) {
 		delete[] this->bits;
 		this->bits = NULL;

@@ -42,6 +42,9 @@ public:
 
 	afx_msg void OnAppAbout();
 	DECLARE_MESSAGE_MAP()
+	afx_msg void OnNew8Bit();
+	afx_msg void OnNew16bit();
+	afx_msg void OnNew32Bit();
 };
 
 extern CBitwiseHelperApp theApp;

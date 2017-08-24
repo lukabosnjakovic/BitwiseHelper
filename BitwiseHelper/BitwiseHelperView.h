@@ -17,6 +17,7 @@
 #define STATICRANGEIDSTART 4000
 #define BUTTONRANGEIDSTART 5000
 #define CHKBOXRANGEIDSTART 6000
+#define CHKNAMERANGEIDSTART 7000
 #define BUTTONOBJECTRANGE 1000	// Make upper 3 numbers range difference equal to this number
 #define BUTTONSACTIONRANGE 100
 
