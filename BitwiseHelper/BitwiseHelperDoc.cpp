@@ -41,11 +41,14 @@ END_MESSAGE_MAP()
 CBitwiseHelperDoc::CBitwiseHelperDoc()
 {
 	// TODO: add one-time construction code here
+	CBitwiseHelperApp * app = (CBitwiseHelperApp *) AfxGetApp();
 	INT16 res;
-	res = 16;
 	CString title;
+	CCHAR MSBFirst;
+	res = app->GetResolution();
 	title.Format(_T("%d-bit Mask"), res);
-	this->bits = new MyBits(res, title, TRUE);
+	MSBFirst = app->IsMSBFirst();
+	this->bits = new MyBits(res, title, MSBFirst);
 }
 
 CBitwiseHelperDoc::~CBitwiseHelperDoc()

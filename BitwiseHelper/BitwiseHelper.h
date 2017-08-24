@@ -26,8 +26,14 @@
 
 class CBitwiseHelperApp : public CWinAppEx
 {
+protected:
+	INT16 resolution;
+	CCHAR MSB;
+	CCHAR UpdateMSB;
 public:
 	CBitwiseHelperApp();
+	INT16 GetResolution();
+	CCHAR IsMSBFirst();
 
 
 // Overrides
@@ -45,6 +51,8 @@ public:
 	afx_msg void OnNew8Bit();
 	afx_msg void OnNew16bit();
 	afx_msg void OnNew32Bit();
+	afx_msg void OnMsbFirstChkbox();
+	afx_msg void OnUpdateMsbFirstChkbox(CCmdUI *pCmdUI);
 };
 
 extern CBitwiseHelperApp theApp;

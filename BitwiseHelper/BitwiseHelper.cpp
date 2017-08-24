@@ -37,6 +37,8 @@ BEGIN_MESSAGE_MAP(CBitwiseHelperApp, CWinAppEx)
 	ON_COMMAND(ID_NEW_8_BIT, &CBitwiseHelperApp::OnNew8Bit)
 	ON_COMMAND(ID_NEW_16_BIT, &CBitwiseHelperApp::OnNew16bit)
 	ON_COMMAND(ID_NEW_32_BIT, &CBitwiseHelperApp::OnNew32Bit)
+	ON_COMMAND(ID_MSB_FIRST_CHKBOX, &CBitwiseHelperApp::OnMsbFirstChkbox)
+	ON_UPDATE_COMMAND_UI(ID_MSB_FIRST_CHKBOX, &CBitwiseHelperApp::OnUpdateMsbFirstChkbox)
 END_MESSAGE_MAP()
 
 
@@ -59,6 +61,19 @@ CBitwiseHelperApp::CBitwiseHelperApp()
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
+	resolution = 0;
+	MSB = TRUE;
+	UpdateMSB = TRUE;
+}
+
+INT16 CBitwiseHelperApp::GetResolution()
+{
+	return this->resolution;
+}
+
+CCHAR CBitwiseHelperApp::IsMSBFirst()
+{
+	return this->MSB;
 }
 
 // The one and only CBitwiseHelperApp object
@@ -233,16 +248,41 @@ void CBitwiseHelperApp::SaveCustomState()
 void CBitwiseHelperApp::OnNew8Bit()
 {
 	// TODO: Add your command handler code here
+	resolution = 8;
+	CWinAppEx::OnFileNew();
 }
 
 
 void CBitwiseHelperApp::OnNew16bit()
 {
 	// TODO: Add your command handler code here
+	resolution = 16;
+	CWinAppEx::OnFileNew();
 }
 
 
 void CBitwiseHelperApp::OnNew32Bit()
 {
 	// TODO: Add your command handler code here
+	resolution = 32;
+	CWinAppEx::OnFileNew();
+}
+
+
+void CBitwiseHelperApp::OnMsbFirstChkbox()
+{
+	// TODO: Add your command handler code here
+	this->MSB = !this->MSB;
+	this->UpdateMSB = TRUE;
+}
+
+
+void CBitwiseHelperApp::OnUpdateMsbFirstChkbox(CCmdUI *pCmdUI)
+{
+	// TODO: Add your command update UI handler code here
+	if (this->UpdateMSB)
+	{
+		pCmdUI->SetCheck(this->MSB);
+		this->UpdateMSB = FALSE;
+	}
 }
