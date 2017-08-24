@@ -88,7 +88,7 @@ CString MyBits::GetBinValueString()
 	CString tmp, output = _T("0b");
 	for (INT16 i = 0; i < this->resolution; i++)
 	{
-		tmp.Format(_T("%d"), this->bits[i].state);
+		tmp.Format(_T("%d"), this->bits[this->IsMSBFirst() ? resolution - 1 - i : i].state);
 		output += tmp;
 	}
 	return output;
@@ -106,7 +106,7 @@ CString MyBits::GetHexValueString()
 	CString tmp, tmp2, output = _T("0x");
 	for (INT16 i = 0; i < this->resolution; i++)
 	{
-		tmp.Format(_T("%d"), this->bits[i].state);
+		tmp.Format(_T("%d"), this->bits[this->IsMSBFirst()? resolution - 1 - i : i].state);
 		tmp2 += tmp;
 		if ((i + 1) % 4 == 0)
 		{

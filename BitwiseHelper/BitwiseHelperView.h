@@ -28,11 +28,22 @@
 #define LBLBTNCORRECT 10
 #define SPACER 10
 
+#define MSBOFFSETy (2 * SPACER)
+#define MSBWIDTH 170
+#define MSBHEIGHT 30
+
 #define TOTALOFFSETx OFFSETx
-#define TOTALOFFSETy (2 * SPACER)
+#define TOTALOFFSETy (MSBOFFSETy + MSBHEIGHT + 3 * SPACER)
 #define TOTALLBLWIDTH (5 * BTNWIDTH)
 #define TOTALLBLHEIGHT (0.8 * BTNHEIGHT)
 #define TOTALVALWIDTH ( 4 * BTNWIDTH)
+#define TOTALMSBNAME 0
+#define TOTALDECNAME 1
+#define	TOTALHEXNAME 2
+#define TOTALBINNAME 3
+#define TOTALDECVAL 4
+#define TOTALHEXVAL 5
+#define TOTALBINVAL 6
 
 class CBitwiseHelperView : public CView
 {
@@ -42,6 +53,7 @@ protected: // create from serialization only
 	CButton * btn;
 	CButton * checkBox;
 	CStatic * labels;
+	CEdit * chkBoxNames;
 	MyBits * bits;
 
 	INT16 resolution;

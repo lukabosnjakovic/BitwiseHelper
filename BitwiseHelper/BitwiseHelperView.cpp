@@ -113,8 +113,9 @@ void CBitwiseHelperView::PrepareViewObjects()
 	MSBFirst = bits->IsMSBFirst();
 
 	btn = new CButton[resolution];
-	labels = new CStatic[resolution + 6];
+	labels = new CStatic[resolution + 7];
 	checkBox = new CButton[resolution];
+	chkBoxNames = new CEdit[resolution];
 }
 
 void CBitwiseHelperView::OnInitialUpdate()
@@ -170,23 +171,50 @@ void CBitwiseHelperView::MakeButtons()
 		// CheckBoxes
 		chp1.x = SPACER + OFFSETx + i / 4 * (4 * BTNWIDTH) + i / 8 * SPACER;
 		chp1.y = p2.y + SPACER + i % 4 * BTNHEIGHT;
-		chp2.x = chp1.x + 4 * BTNWIDTH;
+		chp2.x = chp1.x + BTNWIDTH;
 		chp2.y = chp1.y + BTNHEIGHT;
 		ControlRect.SetRect(chp1, chp2);
-		tmp.Format(_T("Bit %d"), i);
-		checkBox[i].Create(bits->GetBit(i).name,
+		checkBox[i].Create(NULL,
 			WS_CHILD | WS_VISIBLE | BS_CHECKBOX,
 			ControlRect,
 			this, CHKBOXRANGEIDSTART + i);
+
+		// CheckBoxes Names
+		chp1.x += BTNWIDTH;
+		chp1.y += SPACER / 1.5;
+		chp2.x += 3 * BTNWIDTH - SPACER;
+		chp2.y -= BTNHEIGHT * 0.3;
+		ControlRect.SetRect(chp1, chp2);
+		chkBoxNames[i].Create(WS_CHILD | WS_VISIBLE | WS_DISABLED,
+			ControlRect,
+			this, 7000 + i);
+		chkBoxNames[i].SetWindowTextW(bits->GetBit(i).name);
 	}
 
 	//For setting font of CStatic
-	int fontHeight = 25;
-	CFont *font = new CFont();
 	LOGFONT lf;
 	memset(&lf, 0, sizeof(LOGFONT));
-	lf.lfHeight = fontHeight;
-	//_tcscpy(lf.lfFaceName, _T("Arial"));
+	lf.lfHeight = 35;
+	CFont *font0 = new CFont();
+	font0->CreateFontIndirect(&lf);
+	CString MSB;
+	if (bits->IsMSBFirst())
+		MSB = _T("MSB First");
+	else
+		MSB = _T("LSB First");
+	p1.x = TOTALOFFSETx;
+	p1.y = chp2.y + MSBOFFSETy;
+	p2.x = MSBWIDTH;
+	p2.y = p1.y + MSBHEIGHT;
+	ControlRect.SetRect(p1, p2);
+	labels[resolution + TOTALMSBNAME].Create(MSB,
+		WS_CHILD | WS_VISIBLE | SS_LEFT,
+		ControlRect,
+		this, STATICRANGEIDSTART + resolution + TOTALMSBNAME);
+	labels[resolution + TOTALMSBNAME].SetFont(font0);
+
+	CFont *font = new CFont();
+	lf.lfHeight = 25;
 	font->CreateFontIndirect(&lf);
 
 	p1.x = TOTALOFFSETx;
@@ -194,56 +222,56 @@ void CBitwiseHelperView::MakeButtons()
 	p2.x = TOTALLBLWIDTH;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution].Create(_T("Decimal:"),
+	labels[resolution + TOTALDECNAME].Create(_T("Decimal:"),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution);
-	labels[resolution].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALDECNAME);
+	labels[resolution + TOTALDECNAME].SetFont(font);
 	p1.y = p2.y + SPACER;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution + 1].Create(_T("Hexadecimal:"),
+	labels[resolution + TOTALHEXNAME].Create(_T("Hexadecimal:"),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution + 1);
-	labels[resolution + 1].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALHEXNAME);
+	labels[resolution + TOTALHEXNAME].SetFont(font);
 	p1.y = p2.y + SPACER;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution + 2].Create(_T("Binary:"),
+	labels[resolution + TOTALBINNAME].Create(_T("Binary:"),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution + 2);
-	labels[resolution + 2].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALBINNAME);
+	labels[resolution + TOTALBINNAME].SetFont(font);
 
 	p1.x = p2.x + SPACER;
 	p1.y = chp2.y + TOTALOFFSETy;
 	p2.x = p1.x + resolution / 8 * TOTALVALWIDTH;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution + 3].Create(bits->GetDecValueString(),
+	labels[resolution + TOTALDECVAL].Create(bits->GetDecValueString(),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution + 3);
-	labels[resolution + 3].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALDECVAL);
+	labels[resolution + TOTALDECVAL].SetFont(font);
 
 	p1.y = p2.y + SPACER;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution + 4].Create(bits->GetHexValueString(),
+	labels[resolution + TOTALHEXVAL].Create(bits->GetHexValueString(),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution + 4);
-	labels[resolution + 4].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALHEXVAL);
+	labels[resolution + TOTALHEXVAL].SetFont(font);
 
 	p1.y = p2.y + SPACER;
 	p2.y = p1.y + TOTALLBLHEIGHT;
 	ControlRect.SetRect(p1, p2);
-	labels[resolution + 5].Create(bits->GetBinValueString(),
+	labels[resolution + TOTALBINVAL].Create(bits->GetBinValueString(),
 		WS_CHILD | WS_VISIBLE | SS_LEFT,
 		ControlRect,
-		this, STATICRANGEIDSTART + resolution + 5);
-	labels[resolution + 5].SetFont(font);
+		this, STATICRANGEIDSTART + resolution + TOTALBINVAL);
+	labels[resolution + TOTALBINVAL].SetFont(font);
 
 #pragma warning "Pitati profesora kako resize-at View prozor da pase content-u, te onemoguciti da korisnik moze resize-at view"
 }
@@ -290,9 +318,9 @@ void CBitwiseHelperView::ButonsState(INT16 state, CButton * btn, CButton * chk)
 void CBitwiseHelperView::UpdateTotalLabels()
 {
 	CStatic * bin, * dec, * hex;
-	dec = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 3);
-	hex = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 4);
-	bin = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + 5);
+	dec = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALDECVAL);
+	hex = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALHEXVAL);
+	bin = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALBINVAL);
 
 	dec->SetWindowTextW(bits->GetDecValueString());
 	hex->SetWindowTextW(bits->GetHexValueString());
