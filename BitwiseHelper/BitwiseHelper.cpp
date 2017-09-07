@@ -1,9 +1,9 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface
-// (the "Fluent UI") and is provided only as referential material to supplement the
-// Microsoft Foundation Classes Reference and related electronic documentation
-// included with the MFC C++ library software.
-// License terms to copy, use or distribute the Fluent UI are available separately.
-// To learn more about our Fluent UI licensing program, please visit
+// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
+// (the "Fluent UI") and is provided only as referential material to supplement the 
+// Microsoft Foundation Classes Reference and related electronic documentation 
+// included with the MFC C++ library software.  
+// License terms to copy, use or distribute the Fluent UI are available separately.  
+// To learn more about our Fluent UI licensing program, please visit 
 // https://go.microsoft.com/fwlink/?LinkId=238214.
 //
 // Copyright (C) Microsoft Corporation
@@ -18,7 +18,6 @@
 #include "BitwiseHelper.h"
 #include "MainFrm.h"
 
-#include "ChildFrm.h"
 #include "BitwiseHelperDoc.h"
 #include "BitwiseHelperView.h"
 
@@ -32,13 +31,8 @@
 BEGIN_MESSAGE_MAP(CBitwiseHelperApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &CBitwiseHelperApp::OnAppAbout)
 	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &CWinAppEx::OnFileOpen)
-	ON_COMMAND(ID_NEW_8_BIT, &CBitwiseHelperApp::OnNew8Bit)
-	ON_COMMAND(ID_NEW_16_BIT, &CBitwiseHelperApp::OnNew16bit)
-	ON_COMMAND(ID_NEW_32_BIT, &CBitwiseHelperApp::OnNew32Bit)
-	ON_COMMAND(ID_MSB_FIRST_CHKBOX, &CBitwiseHelperApp::OnMsbFirstChkbox)
-	ON_UPDATE_COMMAND_UI(ID_MSB_FIRST_CHKBOX, &CBitwiseHelperApp::OnUpdateMsbFirstChkbox)
+	ON_COMMAND(ID_FILE_NEW, &CBitwiseHelperApp::OnNewFile /* &CWinAppEx::OnFileNew */)
+	ON_COMMAND(ID_FILE_OPEN, &CBitwiseHelperApp::OnOpenFile /* &CWinAppEx::OnFileOpen */)
 END_MESSAGE_MAP()
 
 
@@ -46,6 +40,8 @@ END_MESSAGE_MAP()
 
 CBitwiseHelperApp::CBitwiseHelperApp()
 {
+	m_bHiColorIcons = TRUE;
+
 	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_ALL_ASPECTS;
 #ifdef _MANAGED
@@ -61,19 +57,6 @@ CBitwiseHelperApp::CBitwiseHelperApp()
 
 	// TODO: add construction code here,
 	// Place all significant initialization in InitInstance
-	resolution = 0;
-	MSB = TRUE;
-	UpdateMSB = TRUE;
-}
-
-INT16 CBitwiseHelperApp::GetResolution()
-{
-	return this->resolution;
-}
-
-CCHAR CBitwiseHelperApp::IsMSBFirst()
-{
-	return this->MSB;
 }
 
 // The one and only CBitwiseHelperApp object
@@ -109,7 +92,7 @@ BOOL CBitwiseHelperApp::InitInstance()
 
 	EnableTaskbarInteraction(FALSE);
 
-	// AfxInitRichEdit2() is required to use RichEdit control
+	// AfxInitRichEdit2() is required to use RichEdit control	
 	// AfxInitRichEdit2();
 
 	// Standard initialization
@@ -124,6 +107,7 @@ BOOL CBitwiseHelperApp::InitInstance()
 
 
 	InitContextMenuManager();
+	InitShellManager();
 
 	InitKeyboardManager();
 
@@ -135,41 +119,38 @@ BOOL CBitwiseHelperApp::InitInstance()
 
 	// Register the application's document templates.  Document templates
 	//  serve as the connection between documents, frame windows and views
-	CMultiDocTemplate* pDocTemplate;
-	pDocTemplate = new CMultiDocTemplate(IDR_BitwiseHelperTYPE,
+	CSingleDocTemplate* pDocTemplate;
+	pDocTemplate = new CSingleDocTemplate(
+		IDR_MAINFRAME,
 		RUNTIME_CLASS(CBitwiseHelperDoc),
-		RUNTIME_CLASS(CChildFrame), // custom MDI child frame
+		RUNTIME_CLASS(CMainFrame),       // main SDI frame window
 		RUNTIME_CLASS(CBitwiseHelperView));
 	if (!pDocTemplate)
 		return FALSE;
 	AddDocTemplate(pDocTemplate);
-
-	// create main MDI Frame window
-	CMainFrame* pMainFrame = new CMainFrame;
-	if (!pMainFrame || !pMainFrame->LoadFrame(IDR_MAINFRAME))
-	{
-		delete pMainFrame;
-		return FALSE;
-	}
-	m_pMainWnd = pMainFrame;
 
 
 	// Parse command line for standard shell commands, DDE, file open
 	CCommandLineInfo cmdInfo;
 	ParseCommandLine(cmdInfo);
 
-	if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileNew)   // actually none
-		cmdInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
+	// Enable DDE Execute open
+	EnableShellOpen();
+	RegisterShellFileTypes(TRUE);
 
 
 	// Dispatch commands specified on the command line.  Will return FALSE if
 	// app was launched with /RegServer, /Register, /Unregserver or /Unregister.
 	if (!ProcessShellCommand(cmdInfo))
 		return FALSE;
-	// The main window has been initialized, so show and update it
-	pMainFrame->ShowWindow(m_nCmdShow);
-	pMainFrame->UpdateWindow();
 
+	// The one and only window has been initialized, so show and update it
+	m_pMainWnd->ShowWindow(SW_SHOW);
+	m_pMainWnd->UpdateWindow();
+	// call DragAcceptFiles only if there's a suffix
+	//  In an SDI app, this should occur after ProcessShellCommand
+	// Enable drag/drop open
+	m_pMainWnd->DragAcceptFiles();
 	return TRUE;
 }
 
@@ -179,6 +160,21 @@ int CBitwiseHelperApp::ExitInstance()
 	AfxOleTerm(FALSE);
 
 	return CWinAppEx::ExitInstance();
+}
+
+void CBitwiseHelperApp::SetDirtyBit()
+{
+	m_dirty_bit = TRUE;
+}
+
+void CBitwiseHelperApp::ClearDirtyBit()
+{
+	m_dirty_bit = FALSE;
+}
+
+BOOL CBitwiseHelperApp::IsDocDirty()
+{
+	return m_dirty_bit;
 }
 
 // CBitwiseHelperApp message handlers
@@ -223,6 +219,24 @@ void CBitwiseHelperApp::OnAppAbout()
 	aboutDlg.DoModal();
 }
 
+void CBitwiseHelperApp::OnNewFile()
+{
+	if (m_dirty_bit)
+		if (AfxMessageBox(_T("Changes not saved!\nNew file anyway?"), MB_YESNO) == IDNO)
+			return;
+	m_dirty_bit = FALSE;
+	CWinAppEx::OnFileNew();
+}
+
+void CBitwiseHelperApp::OnOpenFile()
+{
+	if (m_dirty_bit)
+		if (AfxMessageBox(_T("Changes not saved!\nOpen file anyway?"), MB_YESNO) == IDNO)
+			return;
+	m_dirty_bit = FALSE;
+	CWinAppEx::OnFileOpen();
+}
+
 // CBitwiseHelperApp customization load/save methods
 
 void CBitwiseHelperApp::PreLoadState()
@@ -245,44 +259,4 @@ void CBitwiseHelperApp::SaveCustomState()
 // CBitwiseHelperApp message handlers
 
 
-void CBitwiseHelperApp::OnNew8Bit()
-{
-	// TODO: Add your command handler code here
-	resolution = 8;
-	CWinAppEx::OnFileNew();
-}
 
-
-void CBitwiseHelperApp::OnNew16bit()
-{
-	// TODO: Add your command handler code here
-	resolution = 16;
-	CWinAppEx::OnFileNew();
-}
-
-
-void CBitwiseHelperApp::OnNew32Bit()
-{
-	// TODO: Add your command handler code here
-	resolution = 32;
-	CWinAppEx::OnFileNew();
-}
-
-
-void CBitwiseHelperApp::OnMsbFirstChkbox()
-{
-	// TODO: Add your command handler code here
-	this->MSB = !this->MSB;
-	this->UpdateMSB = TRUE;
-}
-
-
-void CBitwiseHelperApp::OnUpdateMsbFirstChkbox(CCmdUI *pCmdUI)
-{
-	// TODO: Add your command update UI handler code here
-	if (this->UpdateMSB)
-	{
-		pCmdUI->SetCheck(this->MSB);
-		this->UpdateMSB = FALSE;
-	}
-}

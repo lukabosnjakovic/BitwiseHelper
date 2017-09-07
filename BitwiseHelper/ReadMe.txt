@@ -16,8 +16,8 @@ BitwiseHelper.vcxproj
     application wizard.
 
 BitwiseHelper.vcxproj.filters
-    This is the filters file for VC++ projects generated using an Application Wizard.
-    It contains information about the assciation between the files in your project
+    This is the filters file for VC++ projects generated using an Application Wizard. 
+    It contains information about the assciation between the files in your project 
     and the filters. This association is used in the IDE to show grouping of files with
     similar extensions under a specific node (for e.g. ".cpp" files are associated with the
     "Source Files" filter).
@@ -46,6 +46,13 @@ res\BitwiseHelper.rc2
     Visual C++. You should place all resources not editable by
     the resource editor in this file.
 
+BitwiseHelper.reg
+    This is an example .reg file that shows you the kind of registration
+    settings the framework will set for you.  You can use this as a .reg
+    file to go along with your application or just delete it and rely
+    on the default RegisterShellFileTypes registration.
+
+
 /////////////////////////////////////////////////////////////////////////////
 
 For the main frame window:
@@ -53,7 +60,7 @@ For the main frame window:
 
 MainFrm.h, MainFrm.cpp
     These files contain the frame class CMainFrame, which is derived from
-    CMDIFrameWnd and controls all MDI frame features.
+    CFrameWnd and controls all SDI frame features.
 
 res\Toolbar.bmp
     This bitmap file is used to create tiled images for the toolbar.
@@ -63,29 +70,25 @@ res\Toolbar.bmp
     toolbar buttons.
 /////////////////////////////////////////////////////////////////////////////
 
-For the child frame window:
-
-ChildFrm.h, ChildFrm.cpp
-    These files define and implement the CChildFrame class, which
-    supports the child windows in an MDI application.
-
-/////////////////////////////////////////////////////////////////////////////
-
 The application wizard creates one document type and one view:
 
 BitwiseHelperDoc.h, BitwiseHelperDoc.cpp - the document
     These files contain your CBitwiseHelperDoc class.  Edit these files to
     add your special document data and to implement file saving and loading
     (via CBitwiseHelperDoc::Serialize).
+    The Document will have the following strings:
+        File extension:      bmsk
+        File type ID:        BitwiseHelper.Document
+        Main frame caption:  BitwiseHelper
+        Doc type name:       BitwiseHelper
+        Filter name:         Bit Mask (*.bmsk)
+        File new short name: BitwiseHelper
+        File type long name: BitwiseHelper.Document
 
 BitwiseHelperView.h, BitwiseHelperView.cpp - the view of the document
     These files contain your CBitwiseHelperView class.
     CBitwiseHelperView objects are used to view CBitwiseHelperDoc objects.
 
-res\BitwiseHelperDoc.ico
-    This is an icon file, which is used as the icon for MDI child windows
-    for the CBitwiseHelperDoc class.  This icon is included by the main
-    resource file BitwiseHelper.rc.
 
 
 

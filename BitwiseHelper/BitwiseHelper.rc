@@ -108,9 +108,17 @@ IDB_WRITESMALL          BITMAP                  "res\\writesmall.bmp"
 
 IDB_BUTTONS             BITMAP                  "res\\buttons.bmp"
 
-IDB_MYBUTTONS           BITMAP                  "res\\myButtons.bmp"
+IDB_NAVIGATION_LARGE    BITMAP                  "res\\nav_large.bmp"
 
-IDB_BITMAP1             BITMAP                  "res\\myButtons2.bmp"
+IDB_NAVIGATION_LARGE_HC BITMAP                  "res\\nav_large_hc.bmp"
+
+IDB_PAGES               BITMAP                  "res\\pages.bmp"
+
+IDB_PAGES_HC            BITMAP                  "res\\pages_hc.bmp"
+
+IDB_PAGES_SMALL         BITMAP                  "res\\pages_small.bmp"
+
+IDB_PAGES_SMALL_HC      BITMAP                  "res\\pages_small_hc.bmp"
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -158,25 +166,6 @@ BEGIN
     BEGIN
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Close",                      ID_FILE_CLOSE
-        MENUITEM SEPARATOR
-        MENUITEM "Recent File",                 ID_FILE_MRU_FILE1, GRAYED
-        MENUITEM SEPARATOR
-        MENUITEM "E&xit",                       ID_APP_EXIT
-    END
-    POPUP "&Help"
-    BEGIN
-        MENUITEM "&About BitwiseHelper...",     ID_APP_ABOUT
-    END
-END
-
-IDR_BitwiseHelperTYPE MENU
-BEGIN
-    POPUP "&File"
-    BEGIN
-        MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
-        MENUITEM "&Open...\tCtrl+O",            ID_FILE_OPEN
-        MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM "&Save\tCtrl+S",               ID_FILE_SAVE
         MENUITEM "Save &As...",                 ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
@@ -191,13 +180,6 @@ BEGIN
         MENUITEM "Cu&t\tCtrl+X",                ID_EDIT_CUT
         MENUITEM "&Copy\tCtrl+C",               ID_EDIT_COPY
         MENUITEM "&Paste\tCtrl+V",              ID_EDIT_PASTE
-    END
-    POPUP "&Window"
-    BEGIN
-        MENUITEM "&New Window",                 ID_WINDOW_NEW
-        MENUITEM "&Cascade",                    ID_WINDOW_CASCADE
-        MENUITEM "&Tile",                       ID_WINDOW_TILE_HORZ
-        MENUITEM "&Arrange Icons",              ID_WINDOW_ARRANGE
     END
     POPUP "&Help"
     BEGIN
@@ -265,6 +247,149 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,113,41,50,14,WS_GROUP
 END
 
+IDD_BITWISEHELPER_FORM DIALOGEX 0, 0, 806, 437
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+BEGIN
+    CTEXT           "0",IDC_STATIC_0,199,76,8,8
+    CTEXT           "1",IDC_STATIC_1,215,76,8,8
+    CTEXT           "2",IDC_STATIC_2,231,76,8,8
+    CTEXT           "3",IDC_STATIC_3,247,76,8,8
+    CTEXT           "4",IDC_STATIC_4,262,76,8,8
+    CTEXT           "5",IDC_STATIC_5,278,76,8,8
+    CTEXT           "6",IDC_STATIC_6,294,76,8,8
+    CTEXT           "7",IDC_STATIC_7,309,76,8,8
+    CTEXT           "8",IDC_STATIC_8,346,76,8,8
+    CTEXT           "9",IDC_STATIC_9,363,76,8,8
+    CTEXT           "10",IDC_STATIC_10,378,76,8,8
+    CTEXT           "11",IDC_STATIC_11,394,76,8,8
+    CTEXT           "12",IDC_STATIC_12,410,76,8,8
+    CTEXT           "13",IDC_STATIC_13,426,76,8,8
+    CTEXT           "14",IDC_STATIC_14,442,76,8,8
+    CTEXT           "15",IDC_STATIC_15,457,76,8,8
+    CTEXT           "16",IDC_STATIC_16,494,76,8,8
+    CTEXT           "17",IDC_STATIC_17,510,76,8,8
+    CTEXT           "18",IDC_STATIC_18,525,76,8,8
+    CTEXT           "19",IDC_STATIC_19,542,76,8,8
+    CTEXT           "20",IDC_STATIC_20,558,76,8,8
+    CTEXT           "21",IDC_STATIC_21,573,76,8,8
+    CTEXT           "22",IDC_STATIC_22,590,76,8,8
+    CTEXT           "23",IDC_STATIC_23,606,76,8,8
+    CTEXT           "24",IDC_STATIC_24,645,76,8,8
+    CTEXT           "25",IDC_STATIC_25,661,76,8,8
+    CTEXT           "26",IDC_STATIC_26,677,76,8,8
+    CTEXT           "27",IDC_STATIC_27,693,76,8,8
+    CTEXT           "28",IDC_STATIC_28,709,76,8,8
+    CTEXT           "29",IDC_STATIC_29,725,76,8,8
+    CTEXT           "30",IDC_STATIC_30,741,76,8,8
+    CTEXT           "31",IDC_STATIC_31,756,76,8,8
+    PUSHBUTTON      "0",IDC_BUTTON_0,194,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_1,210,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_2,226,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_3,242,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_4,258,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_5,274,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_6,290,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_7,306,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_8,341,89,17,14
+    PUSHBUTTON      "0",IDC_BUTTON_9,358,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_10,374,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_11,390,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_12,406,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_13,422,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_14,438,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_15,454,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_16,490,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_17,506,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_18,522,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_19,538,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_20,554,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_21,570,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_22,586,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_23,602,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_24,640,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_25,656,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_26,672,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_27,688,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_28,704,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_29,720,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_30,736,89,16,14
+    PUSHBUTTON      "0",IDC_BUTTON_31,752,89,16,14
+    CONTROL         "",IDC_CHECK_0,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,117,8,10
+    CONTROL         "",IDC_CHECK_1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,133,8,10
+    CONTROL         "",IDC_CHECK_2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,148,8,10
+    CONTROL         "",IDC_CHECK_3,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,200,163,8,10
+    CONTROL         "",IDC_CHECK_4,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,264,117,8,10
+    CONTROL         "",IDC_CHECK_5,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,264,133,8,10
+    CONTROL         "",IDC_CHECK_6,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,264,148,8,10
+    CONTROL         "",IDC_CHECK_7,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,264,163,8,10
+    CONTROL         "",IDC_CHECK_8,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,348,117,8,10
+    CONTROL         "",IDC_CHECK_9,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,348,133,8,10
+    CONTROL         "",IDC_CHECK_10,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,348,148,8,10
+    CONTROL         "",IDC_CHECK_11,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,348,163,8,10
+    CONTROL         "",IDC_CHECK_12,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,410,117,8,10
+    CONTROL         "",IDC_CHECK_13,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,410,133,8,10
+    CONTROL         "",IDC_CHECK_14,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,410,148,8,10
+    CONTROL         "",IDC_CHECK_15,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,410,163,8,10
+    CONTROL         "",IDC_CHECK_16,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,498,117,8,10
+    CONTROL         "",IDC_CHECK_17,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,498,133,8,10
+    CONTROL         "",IDC_CHECK_18,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,498,148,8,10
+    CONTROL         "",IDC_CHECK_19,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,498,163,8,10
+    CONTROL         "",IDC_CHECK_20,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,562,117,8,10
+    CONTROL         "",IDC_CHECK_21,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,562,133,8,10
+    CONTROL         "",IDC_CHECK_22,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,562,148,8,10
+    CONTROL         "",IDC_CHECK_23,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,562,163,8,10
+    CONTROL         "",IDC_CHECK_24,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,648,117,8,10
+    CONTROL         "",IDC_CHECK_25,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,648,133,8,10
+    CONTROL         "",IDC_CHECK_26,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,648,148,8,10
+    CONTROL         "",IDC_CHECK_27,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,648,163,8,10
+    CONTROL         "",IDC_CHECK_28,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,712,117,8,10
+    CONTROL         "",IDC_CHECK_29,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,712,133,8,10
+    CONTROL         "",IDC_CHECK_30,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,712,148,8,10
+    CONTROL         "",IDC_CHECK_31,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,712,163,8,10
+    EDITTEXT        IDC_EDIT_0,210,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_1,210,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_2,210,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_3,210,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_4,273,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_5,273,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_6,273,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_7,273,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_8,358,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_9,358,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_10,358,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_11,358,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_12,418,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_13,418,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_14,418,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_15,418,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_16,506,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_17,506,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_18,506,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_19,506,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_20,570,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_21,570,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_22,570,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_23,570,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_24,656,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_25,656,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_26,656,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_27,656,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_28,720,117,44,12,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_29,720,133,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_30,720,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    EDITTEXT        IDC_EDIT_31,720,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
+    LTEXT           "MSB First",IDC_STATIC_MSB,194,193,122,36
+    LTEXT           "Decimal:",IDC_STATIC0,194,229,68,8
+    LTEXT           "Hexadecimal:",IDC_STATIC1,194,247,71,8
+    LTEXT           "Binary:",IDC_STATIC2,194,264,67,12
+    EDITTEXT        IDC_EDIT_DEC,265,229,146,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_HEX,265,247,175,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    EDITTEXT        IDC_EDIT_BIN,265,265,289,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
+    LTEXT           "Static",IDC_DOC_NAME_STATIC,194,33,446,36
+    CONTROL         "",IDC_TREE,"SysTreeView32",TVS_HASBUTTONS | TVS_HASLINES | TVS_LINESATROOT | TVS_DISABLEDRAGDROP | TVS_SHOWSELALWAYS | TVS_SINGLEEXPAND | WS_BORDER | WS_HSCROLL | WS_TABSTOP,5,3,163,429,WS_EX_CLIENTEDGE
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -320,6 +445,41 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
     END
+
+    IDD_BITWISEHELPER_FORM, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 800
+        VERTGUIDE, 71
+        VERTGUIDE, 77
+        VERTGUIDE, 87
+        VERTGUIDE, 141
+        VERTGUIDE, 150
+        VERTGUIDE, 218
+        VERTGUIDE, 225
+        VERTGUIDE, 235
+        VERTGUIDE, 287
+        VERTGUIDE, 295
+        VERTGUIDE, 367
+        VERTGUIDE, 375
+        VERTGUIDE, 383
+        VERTGUIDE, 439
+        VERTGUIDE, 447
+        VERTGUIDE, 517
+        VERTGUIDE, 525
+        VERTGUIDE, 533
+        VERTGUIDE, 589
+        VERTGUIDE, 597
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 430
+        HORZGUIDE, 33
+        HORZGUIDE, 84
+        HORZGUIDE, 89
+        HORZGUIDE, 117
+        HORZGUIDE, 133
+        HORZGUIDE, 148
+        HORZGUIDE, 163
+    END
 END
 #endif    // APSTUDIO_INVOKED
 
@@ -334,6 +494,154 @@ IDR_RIBBON              RT_RIBBON_XML           "res\\ribbon.mfcribbon-ms"
 
 /////////////////////////////////////////////////////////////////////////////
 //
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_BITWISEHELPER_FORM AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 100, 0, 0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
 // String Table
 //
 
@@ -344,9 +652,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDR_MAINFRAME           "Bitwise Helper"
-    IDR_BitwiseHelperTYPE   "\nBitwiseHelper\nBitwiseHelper\n\n\nBitwiseHelper.Document\nBitwiseHelper.Document"
-    ID_WINDOW_MANAGER       "&Windows..."
+    IDR_MAINFRAME           "BitwiseHelper\n\nBitwiseHelper\nBit Mask (*.bmsk)\n.bmsk\nBitwiseHelper.Document\nBitwiseHelper.Document"
 END
 
 STRINGTABLE
@@ -408,11 +714,6 @@ END
 
 STRINGTABLE
 BEGIN
-    ID_WINDOW_NEW           "Open another window for the active document\nNew Window"
-    ID_WINDOW_ARRANGE       "Arrange icons at the bottom of the window\nArrange Icons"
-    ID_WINDOW_CASCADE       "Arrange windows so they overlap\nCascade Windows"
-    ID_WINDOW_TILE_HORZ     "Arrange windows as non-overlapping tiles\nTile Windows"
-    ID_WINDOW_TILE_VERT     "Arrange windows as non-overlapping tiles\nTile Windows"
     ID_WINDOW_SPLIT         "Split the active window into panes\nSplit"
 END
 
@@ -451,7 +752,6 @@ STRINGTABLE
 BEGIN
     AFX_IDS_SCRESTORE       "Restore the window to normal size"
     AFX_IDS_SCTASKLIST      "Activate Task List"
-    AFX_IDS_MDICHILD        "Activate this window"
 END
 
 STRINGTABLE
@@ -462,16 +762,25 @@ END
 
 STRINGTABLE
 BEGIN
+    IDS_MYCALENDARS         "My Calendars"
+    IDS_CALENDAR            "Calendar"
+    IDS_SHORTCUTS           "Shortcuts"
+    IDS_FOLDERS             "Folders"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_OUTLOOKBAR          "Outlook Bar"
+END
+
+STRINGTABLE
+BEGIN
     IDS_EDIT_MENU           "Edit"
 END
 
 STRINGTABLE
 BEGIN
-    ID_NEW                  "New element"
-    ID_NEW_8_BIT            "Create a new 8-bit mask\nNew"
-    ID_NEW_16_BIT           "Create a new 16-bit mask\nNew"
-    ID_NEW_32_BIT           "Create a new 32-bit mask\nNew"
-    ID_OPEN_TEMPLATE        "Open a already made bit mask\nOpen Template"
+    ID_RESOLUTION_SLIDER    "Slide to change resolution"
 END
 
 #endif    // English (United States) resources

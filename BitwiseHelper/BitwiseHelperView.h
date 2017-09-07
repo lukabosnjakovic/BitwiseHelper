@@ -1,9 +1,9 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface
-// (the "Fluent UI") and is provided only as referential material to supplement the
-// Microsoft Foundation Classes Reference and related electronic documentation
-// included with the MFC C++ library software.
-// License terms to copy, use or distribute the Fluent UI are available separately.
-// To learn more about our Fluent UI licensing program, please visit
+// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
+// (the "Fluent UI") and is provided only as referential material to supplement the 
+// Microsoft Foundation Classes Reference and related electronic documentation 
+// included with the MFC C++ library software.  
+// License terms to copy, use or distribute the Fluent UI are available separately.  
+// To learn more about our Fluent UI licensing program, please visit 
 // https://go.microsoft.com/fwlink/?LinkId=238214.
 //
 // Copyright (C) Microsoft Corporation
@@ -13,52 +13,21 @@
 //
 
 #pragma once
+#include "afxwin.h"
+#include "afxcmn.h"
 
-#define STATICRANGEIDSTART 4000
-#define BUTTONRANGEIDSTART 5000
-#define CHKBOXRANGEIDSTART 6000
-#define CHKNAMERANGEIDSTART 7000
-#define BUTTONOBJECTRANGE 1000	// Make upper 3 numbers range difference equal to this number
-#define BUTTONSACTIONRANGE 100
+#define RESOLUTION 32
 
-#define OFFSETx 20
-#define OFFSETy 20
-#define BTNWIDTH 30
-#define BTNHEIGHT 30
-#define LABELHEIGHT 15
-#define LBLBTNCORRECT 10
-#define SPACER 10
-
-#define MSBOFFSETy (2 * SPACER)
-#define MSBWIDTH 170
-#define MSBHEIGHT 30
-
-#define TOTALOFFSETx OFFSETx
-#define TOTALOFFSETy (MSBOFFSETy + MSBHEIGHT + 3 * SPACER)
-#define TOTALLBLWIDTH (5 * BTNWIDTH)
-#define TOTALLBLHEIGHT (0.8 * BTNHEIGHT)
-#define TOTALVALWIDTH ( 4 * BTNWIDTH)
-#define TOTALMSBNAME 0
-#define TOTALDECNAME 1
-#define	TOTALHEXNAME 2
-#define TOTALBINNAME 3
-#define TOTALDECVAL 4
-#define TOTALHEXVAL 5
-#define TOTALBINVAL 6
-
-class CBitwiseHelperView : public CView
+class CBitwiseHelperView : public CFormView
 {
 protected: // create from serialization only
 	CBitwiseHelperView();
 	DECLARE_DYNCREATE(CBitwiseHelperView)
-	CButton * btn;
-	CButton * checkBox;
-	CStatic * labels;
-	CEdit * chkBoxNames;
-	MyBits * bits;
 
-	INT16 resolution;
-	INT16 MSBFirst;
+public:
+#ifdef AFX_DESIGN_TIME
+	enum{ IDD = IDD_BITWISEHELPER_FORM };
+#endif
 
 // Attributes
 public:
@@ -69,23 +38,34 @@ public:
 
 // Overrides
 public:
-	virtual void OnDraw(CDC* pDC);  // overridden to draw this view
 	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
 protected:
+	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	virtual void OnInitialUpdate(); // called first time after construct
+	void ChangeState(UINT nID, BOOL state);
+	void FillDataFromDocument();
+	void CleanForNewDoc();
+	void CleanChkBoxes();
 
 // Implementation
 public:
 	virtual ~CBitwiseHelperView();
+	void BitOrder();
+	void MakeValue(INT16 index, BOOL state);
+	void ApplyMask(UINT32 mask, BOOL state);
+	void UpdateTotal();
+	CString GetHexChar(CString hex);
+	CString GetDecValueString();
+	CString GetHexValueString();
+	CString GetBinValueString();
+	void RefreshTree();
+
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
 protected:
-	void PrepareViewObjects();
-	void MakeButtons();
-	void ButonsState(INT16 state, CButton * btn, CButton * chk);
-	void UpdateTotalLabels();
 
 // Generated message map functions
 protected:
@@ -95,9 +75,31 @@ protected:
 	afx_msg	void OnBnClicked(UINT nID);
 	afx_msg	void OnChkBxClicked(UINT nID);
 	DECLARE_MESSAGE_MAP()
-public:
-	virtual void OnInitialUpdate();
 protected:
+	CArray<CEdit> m_edit;
+	CArray<CButton> m_button;
+	CArray<CButton> m_chkbx;
+	CArray<CStatic> m_bit_label;
+	CEdit m_MSB_Label;
+	CEdit m_total_dec;
+	CEdit m_total_hex;
+	CEdit m_total_bin;
+	CEdit m_doc_name;
+	BOOL m_MSB_First;
+	UINT32 m_value;
+	UINT16 m_resolution;
+	BOOL m_opened_document;
+	BOOL m_edit_bit_names;
+	CBitwiseHelperDoc * m_doc;
+	CBitwiseHelperApp * m_app;
+	CMainFrame * m_mainFrm;
+	
+public:
+	afx_msg void OnResolutionSlider();
+	afx_msg void OnCheckMsb();
+	afx_msg void OnCheckEnableEdit();
+	CTreeCtrl m_tree;
+	afx_msg void OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult);
 };
 
 #ifndef _DEBUG  // debug version in BitwiseHelperView.cpp

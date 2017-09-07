@@ -1,9 +1,9 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface
-// (the "Fluent UI") and is provided only as referential material to supplement the
-// Microsoft Foundation Classes Reference and related electronic documentation
-// included with the MFC C++ library software.
-// License terms to copy, use or distribute the Fluent UI are available separately.
-// To learn more about our Fluent UI licensing program, please visit
+// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
+// (the "Fluent UI") and is provided only as referential material to supplement the 
+// Microsoft Foundation Classes Reference and related electronic documentation 
+// included with the MFC C++ library software.  
+// License terms to copy, use or distribute the Fluent UI are available separately.  
+// To learn more about our Fluent UI licensing program, please visit 
 // https://go.microsoft.com/fwlink/?LinkId=238214.
 //
 // Copyright (C) Microsoft Corporation
@@ -19,8 +19,10 @@
 #include "BitwiseHelper.h"
 #endif
 
+#include "MainFrm.h"
 #include "BitwiseHelperDoc.h"
 #include "BitwiseHelperView.h"
+
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -29,50 +31,319 @@
 
 // CBitwiseHelperView
 
-IMPLEMENT_DYNCREATE(CBitwiseHelperView, CView)
+IMPLEMENT_DYNCREATE(CBitwiseHelperView, CFormView)
 
-BEGIN_MESSAGE_MAP(CBitwiseHelperView, CView)
+BEGIN_MESSAGE_MAP(CBitwiseHelperView, CFormView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
-	ON_CONTROL_RANGE(BN_CLICKED, BUTTONRANGEIDSTART, BUTTONRANGEIDSTART + BUTTONSACTIONRANGE, &CBitwiseHelperView::OnBnClicked)
-	ON_CONTROL_RANGE(BN_CLICKED, CHKBOXRANGEIDSTART, CHKBOXRANGEIDSTART + BUTTONSACTIONRANGE, &CBitwiseHelperView::OnChkBxClicked)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_BUTTON_0, IDC_BUTTON_31, &CBitwiseHelperView::OnBnClicked)
+	ON_CONTROL_RANGE(BN_CLICKED, IDC_CHECK_0, IDC_CHECK_31, &CBitwiseHelperView::OnChkBxClicked)
+	ON_COMMAND(ID_RESOLUTION_SLIDER, &CBitwiseHelperView::OnResolutionSlider)
+	ON_COMMAND(ID_CHECK_MSB, &CBitwiseHelperView::OnCheckMsb)
+	ON_COMMAND(ID_CHECK_ENABLE_EDIT, &CBitwiseHelperView::OnCheckEnableEdit)
+	ON_NOTIFY(NM_DBLCLK, IDC_TREE, &CBitwiseHelperView::OnNMDblclkTree)
 END_MESSAGE_MAP()
 
 // CBitwiseHelperView construction/destruction
 
 CBitwiseHelperView::CBitwiseHelperView()
+	: CFormView(IDD_BITWISEHELPER_FORM)
 {
-	// TODO: add construction code here
+	m_edit.SetSize(RESOLUTION);
+	m_button.SetSize(RESOLUTION);
+	m_chkbx.SetSize(RESOLUTION);
+	m_bit_label.SetSize(RESOLUTION);
+	m_value = 0;
+	m_resolution = 32;
+	m_MSB_First = TRUE;
+	m_opened_document = FALSE;
 }
 
 CBitwiseHelperView::~CBitwiseHelperView()
 {
 }
 
+void CBitwiseHelperView::DoDataExchange(CDataExchange* pDX)
+{
+	CFormView::DoDataExchange(pDX);
+	for (INT16 i = 0; i < RESOLUTION; i++) {
+		DDX_Control(pDX, IDC_STATIC_0 + i, m_bit_label.ElementAt(i));
+		DDX_Control(pDX, IDC_BUTTON_0 + i, m_button.ElementAt(i));
+		DDX_Control(pDX, IDC_CHECK_0 + i, m_chkbx.ElementAt(i));
+		DDX_Control(pDX, IDC_EDIT_0 + i, m_edit.ElementAt(i));
+	}
+	DDX_Control(pDX, IDC_STATIC_MSB, m_MSB_Label);
+	DDX_Control(pDX, IDC_EDIT_DEC, m_total_dec);
+	DDX_Control(pDX, IDC_EDIT_HEX, m_total_hex);
+	DDX_Control(pDX, IDC_EDIT_BIN, m_total_bin);
+	DDX_Control(pDX, IDC_DOC_NAME_STATIC, m_doc_name);
+	DDX_Control(pDX, IDC_TREE, m_tree);
+}
+
 BOOL CBitwiseHelperView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
 	//  the CREATESTRUCT cs
-	cs.style &= ~FWS_ADDTOTITLE;
-	return CView::PreCreateWindow(cs);
+	return CFormView::PreCreateWindow(cs);
 }
 
-// CBitwiseHelperView drawing
-
-void CBitwiseHelperView::OnDraw(CDC* /*pDC*/)
+void CBitwiseHelperView::OnInitialUpdate()
 {
-	CBitwiseHelperDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
-	if (!pDoc)
-		return;
+	CFormView::OnInitialUpdate();
+	m_doc = GetDocument();
+	m_app = (CBitwiseHelperApp *) AfxGetApp();
+	m_mainFrm = (CMainFrame*)AfxGetMainWnd();
+	CFont font;
+	LOGFONT lf;
+	GetParentFrame()->RecalcLayout();
+	ResizeParentToFit();
+	memset(&lf, 0, sizeof(LOGFONT));
+	lf.lfHeight = 25;
+	m_total_dec.SetFont(&font);
+	m_total_hex.SetFont(&font);
+	m_total_bin.SetFont(&font);
+	CStatic * myStatic;
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC0);
+	myStatic->SetFont(&font);
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC1);
+	myStatic->SetFont(&font);
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC2);
+	myStatic->SetFont(&font);
+	lf.lfHeight = 30;
+	font.CreateFontIndirectW(&lf);
+	m_MSB_Label.SetFont(&font);
+	font.DeleteObject();
+	lf.lfHeight = 45;
+	font.CreateFontIndirectW(&lf);
+	m_doc_name.SetWindowTextW(_T("New Bitmask"));
+	m_doc_name.SetFont(&font);
+	if (m_doc->IsNewDoc())
+		CleanForNewDoc();
+	BitOrder();
+	CleanChkBoxes();
+	m_opened_document = m_doc->IsDocOpened();
+	if (m_opened_document)
+		FillDataFromDocument();
+	else
+		RefreshTree();
+}
 
-	// TODO: add draw code for native data here
+void CBitwiseHelperView::ChangeState(UINT nID, BOOL state)
+{
+	if (state)
+	{
+		m_button.ElementAt(nID).SetWindowTextW(_T("1"));
+		m_chkbx.ElementAt(nID).SetCheck(TRUE);
+	}
+	else
+	{
+		m_button.ElementAt(nID).SetWindowTextW(_T("0"));
+		m_chkbx.ElementAt(nID).SetCheck(FALSE);
+	}
+	UpdateData();
+	UpdateData(FALSE);
+	UpdateTotal();
+}
+
+void CBitwiseHelperView::FillDataFromDocument()
+{
+	m_doc_name.SetWindowTextW(m_doc->GetDocName());
+	m_resolution = m_doc->GetResolution();
+	m_MSB_First = m_doc->GetMSBFirst();
+	BitOrder();
+	UpdateTotal();
+	for (INT16 i = 0; i < m_resolution; i++)
+		m_edit.ElementAt(i).SetWindowTextW(m_doc->GetBitAt(i));
+	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
+	switch (m_resolution)
+	{
+	case 8: m_mainFrm->SetRibbonSliderLabelText(_T("8 bit mask")); m_mainFrm->SetRibbonSliderPos(0); break;
+	case 16: m_mainFrm->SetRibbonSliderLabelText(_T("16 bit mask")); m_mainFrm->SetRibbonSliderPos(1); break;
+	case 32: m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask")); m_mainFrm->SetRibbonSliderPos(2);  break;
+	};
+}
+
+void CBitwiseHelperView::CleanForNewDoc()
+{
+	m_opened_document = FALSE;
+	m_MSB_First = TRUE;
+	m_resolution = 32;
+	m_edit_bit_names = FALSE;
+	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
+	m_mainFrm->SetRibbonSliderPos(2);
+	m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask"));
+	m_mainFrm->SetRibbonEditChkBoxValue(m_edit_bit_names);
+	for (INT16 i = 0; i < RESOLUTION; i++)
+	{
+		m_edit.ElementAt(i).SetReadOnly(!m_edit_bit_names);
+		ChangeState(i, FALSE);
+	}
+}
+
+void CBitwiseHelperView::CleanChkBoxes()
+{
+	for (INT16 i = 0; i < RESOLUTION; i++)
+	{
+		ChangeState(i, FALSE);
+	}
+}
+
+void CBitwiseHelperView::RefreshTree()
+{
+	HTREEITEM root, tmp;
+	m_tree.DeleteAllItems();
+	root = m_tree.InsertItem(_T("Architecture"));
+	WIN32_FIND_DATA FindFileData;
+	HANDLE hFind;
+	CString bitmaskResPath = m_doc->bitmaskResPath;
+	hFind = FindFirstFile(bitmaskResPath, &FindFileData);
+	do
+	{
+		CString diskObject;
+		diskObject = FindFileData.cFileName;
+		if (FindFileData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+		{
+			if (diskObject == _T(".") || diskObject == _T(".."))		// Directory
+				continue;
+			tmp = m_tree.InsertItem(diskObject, root);
+			WIN32_FIND_DATA FindFileDataInFolder;
+			HANDLE hFindInFolder;
+			CString folderPath = bitmaskResPath;
+			folderPath.Remove('*');
+			folderPath += diskObject + _T("\\*");
+			hFindInFolder = FindFirstFile(folderPath, &FindFileDataInFolder);
+			do {
+				CString dir = FindFileDataInFolder.cFileName;
+				if (dir == _T(".") || dir == _T(".."))
+					continue;
+				if (dir.Find(_T(".bmsk")) == -1)
+					continue;
+				m_tree.InsertItem(FindFileDataInFolder.cFileName, tmp);
+			} while (FindNextFile(hFindInFolder, &FindFileDataInFolder) != 0);
+			FindClose(hFindInFolder);
+		}
+		else
+		{
+			if (diskObject.Find(_T(".bmsk")) == -1)
+				continue;
+			m_tree.InsertItem(diskObject, root);		// File
+		}
+	} while (FindNextFile(hFind, &FindFileData) != 0);
+	FindClose(hFind);
+
+	m_tree.Expand(root, TVE_EXPAND);
+}
+
+void CBitwiseHelperView::MakeValue(INT16 index, BOOL state)
+{
+	UINT32 tmp;
+	tmp = 1;
+	if (m_MSB_First) 
+	{
+		tmp <<= m_resolution - index - 1;
+	}
+	else
+	{
+		tmp <<= index;
+	}
+	if ((m_value & tmp) == state)
+		return;
+	ApplyMask(tmp, state);
+}
+
+void CBitwiseHelperView::ApplyMask(UINT32 mask, BOOL state)
+{
+	if (state)
+		m_value |= mask;
+	else
+		m_value ^= mask;
+}
+
+void CBitwiseHelperView::UpdateTotal()
+{
+	m_total_dec.SetWindowTextW(GetDecValueString());
+	m_total_hex.SetWindowTextW(GetHexValueString());
+	m_total_bin.SetWindowTextW(GetBinValueString());
+}
+
+CString CBitwiseHelperView::GetDecValueString()
+{
+	CString output = _T("");
+	for (INT16 i = 0; i < m_resolution; i++)
+		MakeValue(i, m_chkbx.ElementAt(i).GetCheck());
+	output.Format(_T("%u"), m_value);
+	return output;
+}
+
+CString CBitwiseHelperView::GetHexValueString()
+{
+	CString tmp, tmp2, output = _T("0x");
+	for (INT16 i = 0; i < m_resolution; i++)
+	{
+		tmp.Format(_T("%d"), m_chkbx.ElementAt(i).GetCheck());
+		tmp2 += tmp;
+		if ((i + 1) % 4 == 0)
+		{
+			output += GetHexChar(tmp2);
+			tmp2 = _T("");
+		}
+	}
+	return output;
+}
+
+CString CBitwiseHelperView::GetBinValueString()
+{
+	CString tmp, output = _T("0b");
+	for (INT16 i = 0; i < this->m_resolution; i++)
+	{
+		tmp.Format(_T("%d"), m_chkbx.ElementAt(i).GetCheck());
+		output += tmp;
+	}
+	return output;
+}
+
+CString CBitwiseHelperView::GetHexChar(CString hex)
+{
+	if (hex == "0000")
+		return _T("0");
+	if (hex == "0001")
+		return _T("1");
+	if (hex == "0010")
+		return _T("2");
+	if (hex == "0011")
+		return _T("3");
+	if (hex == "0100")
+		return _T("4");
+	if (hex == "0101")
+		return _T("5");
+	if (hex == "0110")
+		return _T("6");
+	if (hex == "0111")
+		return _T("7");
+	if (hex == "1000")
+		return _T("8");
+	if (hex == "1001")
+		return _T("9");
+	if (hex == "1010")
+		return _T("A");
+	if (hex == "1011")
+		return _T("B");
+	if (hex == "1100")
+		return _T("C");
+	if (hex == "1101")
+		return _T("D");
+	if (hex == "1110")
+		return _T("E");
+	if (hex == "1111")
+		return _T("F");
+
+	return _T("");
 }
 
 void CBitwiseHelperView::OnRButtonUp(UINT /* nFlags */, CPoint point)
 {
-	ClientToScreen(&point);
-	OnContextMenu(this, point);
+	//ClientToScreen(&point);
+	//OnContextMenu(this, point);
 }
 
 void CBitwiseHelperView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
@@ -82,247 +353,162 @@ void CBitwiseHelperView::OnContextMenu(CWnd* /* pWnd */, CPoint point)
 #endif
 }
 
+void CBitwiseHelperView::OnBnClicked(UINT nID)
+{
+	m_app->SetDirtyBit();
+	CString tmp;
+	nID -= 1100;
+	m_button.ElementAt(nID).GetWindowTextW(tmp);
+	ChangeState(nID, tmp == "0") ;
+}
+
+void CBitwiseHelperView::OnChkBxClicked(UINT nID)
+{
+	m_app->SetDirtyBit();
+	nID -= 1200;
+	ChangeState(nID, m_chkbx.ElementAt(nID).GetCheck());
+}
 
 // CBitwiseHelperView diagnostics
 
 #ifdef _DEBUG
 void CBitwiseHelperView::AssertValid() const
 {
-	CView::AssertValid();
+	CFormView::AssertValid();
 }
 
 void CBitwiseHelperView::Dump(CDumpContext& dc) const
 {
-	CView::Dump(dc);
+	CFormView::Dump(dc);
 }
+#endif //_DEBUG
+
+void CBitwiseHelperView::BitOrder()
+{
+	for (INT16 i = 0; i < RESOLUTION; i++)
+	{
+		if (i > (m_resolution - 1))
+		{
+			m_edit.ElementAt(i).ShowWindow(SW_HIDE);
+			m_bit_label.ElementAt(i).ShowWindow(SW_HIDE);
+			m_button.ElementAt(i).ShowWindow(SW_HIDE);
+			m_chkbx.ElementAt(i).ShowWindow(SW_HIDE);
+			continue;
+		}
+		m_edit.ElementAt(i).ShowWindow(SW_SHOW);
+		m_bit_label.ElementAt(i).ShowWindow(SW_SHOW);
+		m_button.ElementAt(i).ShowWindow(SW_SHOW);
+		m_chkbx.ElementAt(i).ShowWindow(SW_SHOW);
+		CString tmp;
+		INT16 index;
+		if(m_MSB_First)
+			index = m_resolution - i - 1;
+		else
+			index = i;
+		if (!m_opened_document)
+		{
+			tmp.Format(_T("Bit %d"), index);
+			m_edit.ElementAt(i).SetWindowTextW(tmp);
+		}		
+		tmp.Format(_T("%d"), index);
+		m_bit_label.ElementAt(i).SetWindowTextW(tmp);
+	}
+}
+
 
 CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CBitwiseHelperDoc)));
 	return (CBitwiseHelperDoc*)m_pDocument;
 }
-#endif //_DEBUG
 
 
 // CBitwiseHelperView message handlers
 
-void CBitwiseHelperView::PrepareViewObjects() 
+void CBitwiseHelperView::OnResolutionSlider()
 {
-	bits = this->GetDocument()->bits;
-	resolution = bits->GetResolution();
-	MSBFirst = bits->IsMSBFirst();
-
-	btn = new CButton[resolution];
-	labels = new CStatic[resolution + 7];
-	checkBox = new CButton[resolution];
-	chkBoxNames = new CEdit[resolution];
+	m_app->SetDirtyBit();
+	switch (m_mainFrm->GetRibbonSliderPos())
+	{
+	case 0: m_mainFrm->SetRibbonSliderLabelText(_T("8 bit mask")); m_resolution = 8; break;
+	case 1: m_mainFrm->SetRibbonSliderLabelText(_T("16 bit mask")); m_resolution = 16; break;
+	case 2: m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask")); m_resolution = 32; break;
+	};
+	BitOrder();
+	m_value = 0;
+	UpdateTotal();
 }
 
-void CBitwiseHelperView::OnInitialUpdate()
+
+void CBitwiseHelperView::OnCheckMsb()
 {
-	CView::OnInitialUpdate();
-	
-	PrepareViewObjects();
-
-	MakeButtons();
-
-}
-
-void CBitwiseHelperView::MakeButtons()
-{
-	CRect ControlRect;
-	POINT p1, p2, chp1, chp2;
-	INT16 b;
-	CString tmp;
-
-	if (MSBFirst)
-		b = resolution - 1;
-	else
-		b = 0;
-
-	for (INT16 i = 0; i < resolution; i++) {
-		p1.x = OFFSETx + i * BTNWIDTH + i/8 * SPACER;
-		p1.y = OFFSETy;
-		p2.x = p1.x + BTNWIDTH;
-		p2.y = p1.y + LABELHEIGHT;
-		ControlRect.SetRect(p1, p2);
-
-		// Button labels
-#pragma warning "Pitati profesora kako maknuti pozadinu label-ima i CEdit-ima"
-		tmp.Format(_T("%d"), b);
-		labels[i].Create(tmp,
-			WS_CHILD | WS_VISIBLE | SS_CENTER,
-			ControlRect,
-			this, STATICRANGEIDSTART + i);
-		if (MSBFirst)
-			b--;
-		else
-			b++;
-
-		p1.y += BTNHEIGHT - LBLBTNCORRECT;
-		p2.y += BTNHEIGHT;
-		ControlRect.SetRect(p1, p2);
-		// Buttons
-		btn[i].Create(_T("0"),
-			WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
-			ControlRect,
-			this, BUTTONRANGEIDSTART + i);
-
-		// CheckBoxes
-		chp1.x = SPACER + OFFSETx + i / 4 * (4 * BTNWIDTH) + i / 8 * SPACER;
-		chp1.y = p2.y + SPACER + i % 4 * BTNHEIGHT;
-		chp2.x = chp1.x + BTNWIDTH;
-		chp2.y = chp1.y + BTNHEIGHT;
-		ControlRect.SetRect(chp1, chp2);
-		checkBox[i].Create(NULL,
-			WS_CHILD | WS_VISIBLE | BS_CHECKBOX,
-			ControlRect,
-			this, CHKBOXRANGEIDSTART + i);
-
-		// CheckBoxes Names
-		chp1.x += BTNWIDTH;
-		chp1.y += SPACER / 1.5;
-		chp2.x += 3 * BTNWIDTH - SPACER;
-		chp2.y -= BTNHEIGHT * 0.3;
-		ControlRect.SetRect(chp1, chp2);
-		chkBoxNames[i].Create(WS_CHILD | WS_VISIBLE | WS_DISABLED,
-			ControlRect,
-			this, CHKNAMERANGEIDSTART + i);
-		chkBoxNames[i].SetWindowTextW(bits->GetBit(i).name);
-	}
-
-	//For setting font of CStatic
+	m_app->SetDirtyBit();
+	CFont font;
 	LOGFONT lf;
 	memset(&lf, 0, sizeof(LOGFONT));
-	lf.lfHeight = 35;
-	CFont *font0 = new CFont();
-	font0->CreateFontIndirect(&lf);
-	CString MSB;
-	if (bits->IsMSBFirst())
-		MSB = _T("MSB First");
+	m_MSB_First = !m_mainFrm->GetRibbonMSBChkBoxValue();
+	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
+	if(m_MSB_First)
+		m_MSB_Label.SetWindowTextW(_T("MSB First"));
 	else
-		MSB = _T("LSB First");
-	p1.x = TOTALOFFSETx;
-	p1.y = chp2.y + MSBOFFSETy;
-	p2.x = MSBWIDTH;
-	p2.y = p1.y + MSBHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALMSBNAME].Create(MSB,
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALMSBNAME);
-	labels[resolution + TOTALMSBNAME].SetFont(font0);
-
-	CFont *font = new CFont();
-	lf.lfHeight = 25;
-	font->CreateFontIndirect(&lf);
-
-	p1.x = TOTALOFFSETx;
-	p1.y = chp2.y + TOTALOFFSETy;
-	p2.x = TOTALLBLWIDTH;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALDECNAME].Create(_T("Decimal:"),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALDECNAME);
-	labels[resolution + TOTALDECNAME].SetFont(font);
-	p1.y = p2.y + SPACER;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALHEXNAME].Create(_T("Hexadecimal:"),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALHEXNAME);
-	labels[resolution + TOTALHEXNAME].SetFont(font);
-	p1.y = p2.y + SPACER;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALBINNAME].Create(_T("Binary:"),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALBINNAME);
-	labels[resolution + TOTALBINNAME].SetFont(font);
-
-	p1.x = p2.x + SPACER;
-	p1.y = chp2.y + TOTALOFFSETy;
-	p2.x = p1.x + resolution / 8 * TOTALVALWIDTH;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALDECVAL].Create(bits->GetDecValueString(),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALDECVAL);
-	labels[resolution + TOTALDECVAL].SetFont(font);
-
-	p1.y = p2.y + SPACER;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALHEXVAL].Create(bits->GetHexValueString(),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALHEXVAL);
-	labels[resolution + TOTALHEXVAL].SetFont(font);
-
-	p1.y = p2.y + SPACER;
-	p2.y = p1.y + TOTALLBLHEIGHT;
-	ControlRect.SetRect(p1, p2);
-	labels[resolution + TOTALBINVAL].Create(bits->GetBinValueString(),
-		WS_CHILD | WS_VISIBLE | SS_LEFT,
-		ControlRect,
-		this, STATICRANGEIDSTART + resolution + TOTALBINVAL);
-	labels[resolution + TOTALBINVAL].SetFont(font);
-
-#pragma warning "Pitati profesora kako resize-at View prozor da pase content-u, te onemoguciti da korisnik moze resize-at view"
+		m_MSB_Label.SetWindowTextW(_T("LSB First"));
+	
+	lf.lfHeight = 30;
+	font.CreateFontIndirectW(&lf);
+	m_MSB_Label.SetFont(&font);
+	BitOrder();
+	UpdateTotal();
+	UpdateData();
+	UpdateData(FALSE);
 }
 
-void CBitwiseHelperView::OnBnClicked(UINT nID)
+void CBitwiseHelperView::OnCheckEnableEdit()
 {
-	CString caption;
-	CButton * Btn, * Chk;
-	Btn = (CButton *) GetDlgItem(nID);
-	Chk = (CButton *) GetDlgItem(nID + BUTTONOBJECTRANGE);
-	Btn->GetWindowTextW(caption);
-
-	ButonsState(caption == "0", Btn, Chk);
-}
-
-void CBitwiseHelperView::OnChkBxClicked(UINT nID)
-{
-	CButton * Btn, *Chk;
-	Btn = (CButton *)GetDlgItem(nID - BUTTONOBJECTRANGE);
-	Chk = (CButton *)GetDlgItem(nID);
-	ButonsState(!Chk->GetCheck(), Btn, Chk);
-}
-
-void CBitwiseHelperView::ButonsState(INT16 state, CButton * btn, CButton * chk)
-{
-	INT16 index;
-	index = btn->GetDlgCtrlID();
-	index -= BUTTONRANGEIDSTART;
-	if (state)
+	m_app->SetDirtyBit();
+	m_edit_bit_names = !m_mainFrm->GetRibbonEditChkBoxValue();
+	m_mainFrm->SetRibbonEditChkBoxValue(m_edit_bit_names);
+	for (INT16 i = 0; i < RESOLUTION; i++)
 	{
-		btn->SetWindowTextW(_T("1"));
-		chk->SetCheck(TRUE);
-		bits->SetBit(index, 1);
+		m_edit.ElementAt(i).SetReadOnly(!m_edit_bit_names);
 	}
-	else
+	if(!m_edit_bit_names)
 	{
-		btn->SetWindowTextW(_T("0"));
-		chk->SetCheck(FALSE);
-		bits->SetBit(index, 0);
+		m_opened_document = TRUE;
+		m_doc->SetResolution(m_resolution);
+		m_doc->SetMSBFirst(m_MSB_First);
+		m_doc->CleanBits();
+		for (INT16 i = 0; i < m_resolution; i++)
+		{
+			CString tmp;
+			m_edit.ElementAt(i).GetWindowTextW(tmp);
+			m_doc->AppendBit(tmp);
+		}
+		m_doc->SetToWrite();
 	}
-	UpdateTotalLabels();
 }
 
-void CBitwiseHelperView::UpdateTotalLabels()
-{
-	CStatic * bin, * dec, * hex;
-	dec = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALDECVAL);
-	hex = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALHEXVAL);
-	bin = (CStatic *) GetDlgItem(STATICRANGEIDSTART + resolution + TOTALBINVAL);
 
-	dec->SetWindowTextW(bits->GetDecValueString());
-	hex->SetWindowTextW(bits->GetHexValueString());
-	bin->SetWindowTextW(bits->GetBinValueString());
+void CBitwiseHelperView::OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	// TODO: Add your control notification handler code here
+	HTREEITEM treeItm = m_tree.GetSelectedItem();
+	CString itemText = m_tree.GetItemText(treeItm);
+	if (itemText.Find(_T(".bmsk")) != -1)
+	{
+		HTREEITEM parent = m_tree.GetParentItem(treeItm);
+		HTREEITEM root = m_tree.GetRootItem();
+		CString file = m_doc->bitmaskResPath;
+		file.Remove('*');
+		if (m_tree.GetItemText(parent) != m_tree.GetItemText(root))
+			file += m_tree.GetItemText(parent) + _T("\\");		
+		file += itemText;
+		if (m_app->IsDocDirty())
+			if (AfxMessageBox(_T("Changes not saved!\nOpen file anyway?"), MB_YESNO) == IDNO)
+			{
+				*pResult = 0;
+				return;
+			}
+		m_app->OpenDocumentFile(file);
+	}
+	*pResult = 0;
 }

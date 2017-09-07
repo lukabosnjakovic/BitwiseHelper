@@ -1,9 +1,9 @@
-// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface
-// (the "Fluent UI") and is provided only as referential material to supplement the
-// Microsoft Foundation Classes Reference and related electronic documentation
-// included with the MFC C++ library software.
-// License terms to copy, use or distribute the Fluent UI are available separately.
-// To learn more about our Fluent UI licensing program, please visit
+// This MFC Samples source code demonstrates using MFC Microsoft Office Fluent User Interface 
+// (the "Fluent UI") and is provided only as referential material to supplement the 
+// Microsoft Foundation Classes Reference and related electronic documentation 
+// included with the MFC C++ library software.  
+// License terms to copy, use or distribute the Fluent UI are available separately.  
+// To learn more about our Fluent UI licensing program, please visit 
 // https://go.microsoft.com/fwlink/?LinkId=238214.
 //
 // Copyright (C) Microsoft Corporation
@@ -13,12 +13,21 @@
 //
 
 #pragma once
+#include "CalendarBar.h"
+#include "Resource.h"
 
-class CMainFrame : public CMDIFrameWndEx
+class COutlookBar : public CMFCOutlookBar
 {
-	DECLARE_DYNAMIC(CMainFrame)
-public:
+	virtual BOOL AllowShowOnPaneMenu() const { return TRUE; }
+	virtual void GetPaneName(CString& strName) const { BOOL bNameValid = strName.LoadString(IDS_OUTLOOKBAR); ASSERT(bNameValid); if (!bNameValid) strName.Empty(); }
+};
+
+class CMainFrame : public CFrameWndEx
+{
+	
+protected: // create from serialization only
 	CMainFrame();
+	DECLARE_DYNCREATE(CMainFrame)
 
 // Attributes
 public:
@@ -33,6 +42,13 @@ public:
 // Implementation
 public:
 	virtual ~CMainFrame();
+	INT16 GetRibbonSliderPos();
+	void SetRibbonSliderPos(INT16 pos);
+	void SetRibbonSliderLabelText(CString text);
+	BOOL GetRibbonMSBChkBoxValue();
+	void SetRibbonMSBChkBoxValue(BOOL value);
+	BOOL GetRibbonEditChkBoxValue();
+	void SetRibbonEditChkBoxValue(BOOL value);
 #ifdef _DEBUG
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
@@ -42,13 +58,30 @@ protected:  // control bar embedded members
 	CMFCRibbonBar     m_wndRibbonBar;
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
+	COutlookBar       m_wndNavigationBar;
+	CMFCShellTreeCtrl m_wndTree;
+	CCalendarBar      m_wndCalendar;
+	BOOL	m_chkBox_state;
+	BOOL m_edit_chkBox_state;
+	CString m_lblText;
 
 // Generated message map functions
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	afx_msg void OnWindowManager();
 	DECLARE_MESSAGE_MAP()
 
+	BOOL CreateOutlookBar(CMFCOutlookBar& bar, UINT uiID, CMFCShellTreeCtrl& tree, CCalendarBar& calendar, int nInitialWidth);
+
+	int FindFocusedOutlookWnd(CMFCOutlookBarTabCtrl** ppOutlookWnd);
+
+	CMFCOutlookBarTabCtrl* FindOutlookParent(CWnd* pWnd);
+	CMFCOutlookBarTabCtrl* m_pCurrOutlookWnd;
+	CMFCOutlookBarPane*    m_pCurrOutlookPage;
+public:
+	afx_msg void OnChkBoxUpdate(CCmdUI * pCmdUI);
+	afx_msg void OnSliderUpdate(CCmdUI * pCmdUI);
+	afx_msg void OnLabelUpdate(CCmdUI * pCmdUI);
+	afx_msg void OnEditChkBoxUpdate(CCmdUI * pCmdUI);
 };
 
 

@@ -4,24 +4,22 @@
 // MyBits constructions
 MyBits::MyBits()
 {
-	this->bits = NULL;
-	this->name = _T("New Bit Mask");
-	this->resolution = NULL;
-	this->MSBFirst = TRUE;
-	this->value = 0;
+	name = _T("New Bit Mask");
+	resolution = NULL;
+	MSBFirst = TRUE;
+	value = 0;
 }
 
-MyBits::MyBits(INT16 resolution, CString name, CCHAR MSBFirst)
+MyBits::MyBits(INT16 resolution, CString name, BOOL MSBFirst)
 {
 	this->resolution = resolution;
 	this->name = name;
 	this->MSBFirst = MSBFirst;
-	this->bits = new MyBit[resolution]();
 	MakeBitsArray();
 	this->value = 0;
 }
 
-MyBits::MyBits(MyBit * bits, INT16 resolution, CString name, CCHAR MSBFirst)
+MyBits::MyBits(std::vector<MyBit> bits, INT16 resolution, CString name, BOOL MSBFirst)
 {
 	this->bits = bits;
 	this->resolution = resolution;
@@ -33,14 +31,13 @@ MyBits::MyBits(MyBit * bits, INT16 resolution, CString name, CCHAR MSBFirst)
 // MyBits destruction
 MyBits::~MyBits()
 {
-#pragma warning "Ovdje nikad ne dolazi, moguci memory leak?"
-	if (this->bits != NULL) {
-		delete[] this->bits;
-		this->bits = NULL;
+	if (!bits.empty()) {
+		bits.clear();
+		
 	}
 }
 
-void MyBits::SetBit(INT16 index, CCHAR state)
+void MyBits::SetBit(INT16 index, BOOL state)
 {
 	if(IsMSBFirst())
 		this->bits[this->resolution - index - 1].state = state;
@@ -54,14 +51,14 @@ void MyBits::SetName(CString name)
 	this->name = name;
 }
 
-MyBit * MyBits::GetBitsArray()
+std::vector<MyBit> MyBits::GetBitsVector()
 {
 	return this->bits;
 }
 
 MyBit MyBits::GetBit(INT16 index)
 {
-	return this->bits[index];
+	return this->bits.at(index);
 }
 
 INT16 MyBits::GetResolution()
@@ -74,7 +71,7 @@ CString MyBits::GetName()
 	return this->name;
 }
 
-CCHAR MyBits::IsMSBFirst()
+BOOL MyBits::IsMSBFirst()
 {
 	return this->MSBFirst;
 }
@@ -127,11 +124,11 @@ void MyBits::MakeBitsArray() {
 		b = resolution - 1;
 	else
 		b = 0;
-	for (i = 0; i < this->resolution; i++)
+	for (i = 0; i < resolution; i++)
 	{
 		bit.state = 0;
 		bit.name.Format(_T("Bit %d"), b);;
-		this->bits[i] = bit;
+		this->bits.push_back(bit);
 		if (IsMSBFirst())
 			b--;
 		else
@@ -139,29 +136,29 @@ void MyBits::MakeBitsArray() {
 	}
 }
 
-void MyBits::MakeValue(INT16 index, CCHAR state)
+void MyBits::MakeValue(INT16 index, BOOL state)
 {
 	UINT32 tmp;
 	tmp = 1;
 	if (IsMSBFirst())
-		tmp <<= this->resolution - index - 1;
+		tmp <<= resolution - index - 1;
 	else
 		tmp <<= index;
 	ApplyMask(tmp, state);
 }
 
-void MyBits::ApplyMask(UINT32 mask, CCHAR state)
+void MyBits::ApplyMask(UINT32 mask, BOOL state)
 {
 	if (state)
-		this->value |= mask;
+		value |= mask;
 	else
-		this->value ^= mask;
+		value ^= mask;
 }
 
 void MyBits::CalculateValue()
 {
-	for (INT16 i = 0; i < this->resolution; i++)
-		MakeValue(i, this->bits[i].state);
+	for (INT16 i = 0; i < resolution; i++)
+		MakeValue(i, bits.at(i).state);
 }
 
 CString MyBits::GetHexChar(CString hex)
