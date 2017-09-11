@@ -57,6 +57,14 @@ CBitwiseHelperView::CBitwiseHelperView()
 	m_resolution = 32;
 	m_MSB_First = TRUE;
 	m_opened_document = FALSE;
+
+	memset(&lf, 0, sizeof(LOGFONT));
+	lf.lfHeight = 18;
+	m_totalFont.CreateFontIndirect(&lf);
+	lf.lfHeight = 30;
+	m_MSBFont.CreateFontIndirect(&lf);
+	lf.lfHeight = 45;
+	m_DocNameFont.CreateFontIndirect(&lf);
 }
 
 CBitwiseHelperView::~CBitwiseHelperView()
@@ -93,30 +101,25 @@ void CBitwiseHelperView::OnInitialUpdate()
 	m_doc = GetDocument();
 	m_app = (CBitwiseHelperApp *) AfxGetApp();
 	m_mainFrm = (CMainFrame*)AfxGetMainWnd();
-	CFont font;
-	LOGFONT lf;
+	
 	GetParentFrame()->RecalcLayout();
 	ResizeParentToFit();
-	memset(&lf, 0, sizeof(LOGFONT));
-	lf.lfHeight = 25;
-	m_total_dec.SetFont(&font);
-	m_total_hex.SetFont(&font);
-	m_total_bin.SetFont(&font);
+	
+	m_total_dec.SetFont(&m_totalFont);
+	m_total_hex.SetFont(&m_totalFont);
+	m_total_bin.SetFont(&m_totalFont);
 	CStatic * myStatic;
 	myStatic = (CStatic *)GetDlgItem(IDC_STATIC0);
-	myStatic->SetFont(&font);
+	myStatic->SetFont(&m_totalFont);
 	myStatic = (CStatic *)GetDlgItem(IDC_STATIC1);
-	myStatic->SetFont(&font);
+	myStatic->SetFont(&m_totalFont);
 	myStatic = (CStatic *)GetDlgItem(IDC_STATIC2);
-	myStatic->SetFont(&font);
-	lf.lfHeight = 30;
-	font.CreateFontIndirectW(&lf);
-	m_MSB_Label.SetFont(&font);
-	font.DeleteObject();
-	lf.lfHeight = 45;
-	font.CreateFontIndirectW(&lf);
-	m_doc_name.SetWindowTextW(_T("New Bitmask"));
-	m_doc_name.SetFont(&font);
+	myStatic->SetFont(&m_totalFont);
+	m_MSB_Label.SetFont(&m_MSBFont);	
+	CString stringTmp;
+	stringTmp.LoadString(IDS_NEW_BITMASK);
+	m_doc_name.SetWindowText(stringTmp);
+	m_doc_name.SetFont(&m_DocNameFont);
 	if (m_doc->IsNewDoc())
 		CleanForNewDoc();
 	BitOrder();
@@ -130,16 +133,18 @@ void CBitwiseHelperView::OnInitialUpdate()
 
 void CBitwiseHelperView::ChangeState(UINT nID, BOOL state)
 {
+	CString stringTmp;
 	if (state)
 	{
-		m_button.ElementAt(nID).SetWindowTextW(_T("1"));
+		stringTmp.LoadString(IDS_STRING_1);
 		m_chkbx.ElementAt(nID).SetCheck(TRUE);
 	}
 	else
 	{
-		m_button.ElementAt(nID).SetWindowTextW(_T("0"));
+		stringTmp.LoadString(IDS_STRING_0);
 		m_chkbx.ElementAt(nID).SetCheck(FALSE);
 	}
+	m_button.ElementAt(nID).SetWindowText(stringTmp);
 	UpdateData();
 	UpdateData(FALSE);
 	UpdateTotal();
@@ -147,20 +152,26 @@ void CBitwiseHelperView::ChangeState(UINT nID, BOOL state)
 
 void CBitwiseHelperView::FillDataFromDocument()
 {
-	m_doc_name.SetWindowTextW(m_doc->GetDocName());
+	m_doc_name.SetWindowText(m_doc->GetDocName());
 	m_resolution = m_doc->GetResolution();
 	m_MSB_First = m_doc->GetMSBFirst();
 	BitOrder();
 	UpdateTotal();
 	for (INT16 i = 0; i < m_resolution; i++)
-		m_edit.ElementAt(i).SetWindowTextW(m_doc->GetBitAt(i));
+		m_edit.ElementAt(i).SetWindowText(m_doc->GetBitAt(i));
 	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
+	CString stringTmp;
 	switch (m_resolution)
 	{
-	case 8: m_mainFrm->SetRibbonSliderLabelText(_T("8 bit mask")); m_mainFrm->SetRibbonSliderPos(0); break;
-	case 16: m_mainFrm->SetRibbonSliderLabelText(_T("16 bit mask")); m_mainFrm->SetRibbonSliderPos(1); break;
-	case 32: m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask")); m_mainFrm->SetRibbonSliderPos(2);  break;
+	case 8: stringTmp.LoadString(IDS_8BIT_MASK); m_mainFrm->SetRibbonSliderPos(0); break;
+	case 16: stringTmp.LoadString(IDS_16BIT_MASK); m_mainFrm->SetRibbonSliderPos(1); break;
+	case 32: stringTmp.LoadString(IDS_32BIT_MASK); m_mainFrm->SetRibbonSliderPos(2);  break;
 	};
+	m_mainFrm->SetRibbonSliderLabelText(stringTmp);
+
+	m_MSB_Label.SetFont(&m_MSBFont);
+	stringTmp.LoadString(IDS_MSB_FIRST);
+	m_MSB_Label.SetWindowText(stringTmp);
 }
 
 void CBitwiseHelperView::CleanForNewDoc()
@@ -171,7 +182,9 @@ void CBitwiseHelperView::CleanForNewDoc()
 	m_edit_bit_names = FALSE;
 	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
 	m_mainFrm->SetRibbonSliderPos(2);
-	m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask"));
+	CString stringTmp;
+	stringTmp.LoadString(IDS_32BIT_MASK);
+	m_mainFrm->SetRibbonSliderLabelText(stringTmp);
 	m_mainFrm->SetRibbonEditChkBoxValue(m_edit_bit_names);
 	for (INT16 i = 0; i < RESOLUTION; i++)
 	{
@@ -192,7 +205,9 @@ void CBitwiseHelperView::RefreshTree()
 {
 	HTREEITEM root, tmp;
 	m_tree.DeleteAllItems();
-	root = m_tree.InsertItem(_T("Architecture"));
+	CString stringTmp;
+	stringTmp.LoadString(IDS_TREE_ROOT_NAME);
+	root = m_tree.InsertItem(stringTmp);
 	WIN32_FIND_DATA FindFileData;
 	HANDLE hFind;
 	CString bitmaskResPath = m_doc->bitmaskResPath;
@@ -261,9 +276,9 @@ void CBitwiseHelperView::ApplyMask(UINT32 mask, BOOL state)
 
 void CBitwiseHelperView::UpdateTotal()
 {
-	m_total_dec.SetWindowTextW(GetDecValueString());
-	m_total_hex.SetWindowTextW(GetHexValueString());
-	m_total_bin.SetWindowTextW(GetBinValueString());
+	m_total_dec.SetWindowText(GetDecValueString());
+	m_total_hex.SetWindowText(GetHexValueString());
+	m_total_bin.SetWindowText(GetBinValueString());
 }
 
 CString CBitwiseHelperView::GetDecValueString()
@@ -358,7 +373,7 @@ void CBitwiseHelperView::OnBnClicked(UINT nID)
 	m_app->SetDirtyBit();
 	CString tmp;
 	nID -= 1100;
-	m_button.ElementAt(nID).GetWindowTextW(tmp);
+	m_button.ElementAt(nID).GetWindowText(tmp);
 	ChangeState(nID, tmp == "0") ;
 }
 
@@ -387,18 +402,10 @@ void CBitwiseHelperView::BitOrder()
 {
 	for (INT16 i = 0; i < RESOLUTION; i++)
 	{
-		if (i > (m_resolution - 1))
-		{
-			m_edit.ElementAt(i).ShowWindow(SW_HIDE);
-			m_bit_label.ElementAt(i).ShowWindow(SW_HIDE);
-			m_button.ElementAt(i).ShowWindow(SW_HIDE);
-			m_chkbx.ElementAt(i).ShowWindow(SW_HIDE);
-			continue;
-		}
-		m_edit.ElementAt(i).ShowWindow(SW_SHOW);
-		m_bit_label.ElementAt(i).ShowWindow(SW_SHOW);
-		m_button.ElementAt(i).ShowWindow(SW_SHOW);
-		m_chkbx.ElementAt(i).ShowWindow(SW_SHOW);
+		m_edit.ElementAt(i).ShowWindow(i >(m_resolution - 1) ? SW_HIDE : SW_SHOW);
+		m_bit_label.ElementAt(i).ShowWindow(i >(m_resolution - 1) ? SW_HIDE : SW_SHOW);
+		m_button.ElementAt(i).ShowWindow(i >(m_resolution - 1) ? SW_HIDE : SW_SHOW);
+		m_chkbx.ElementAt(i).ShowWindow(i >(m_resolution - 1) ? SW_HIDE : SW_SHOW);
 		CString tmp;
 		INT16 index;
 		if(m_MSB_First)
@@ -408,10 +415,10 @@ void CBitwiseHelperView::BitOrder()
 		if (!m_opened_document)
 		{
 			tmp.Format(_T("Bit %d"), index);
-			m_edit.ElementAt(i).SetWindowTextW(tmp);
+			m_edit.ElementAt(i).SetWindowText(tmp);
 		}		
 		tmp.Format(_T("%d"), index);
-		m_bit_label.ElementAt(i).SetWindowTextW(tmp);
+		m_bit_label.ElementAt(i).SetWindowText(tmp);
 	}
 }
 
@@ -428,12 +435,15 @@ CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version 
 void CBitwiseHelperView::OnResolutionSlider()
 {
 	m_app->SetDirtyBit();
+
+	CString stringTmp;
 	switch (m_mainFrm->GetRibbonSliderPos())
 	{
-	case 0: m_mainFrm->SetRibbonSliderLabelText(_T("8 bit mask")); m_resolution = 8; break;
-	case 1: m_mainFrm->SetRibbonSliderLabelText(_T("16 bit mask")); m_resolution = 16; break;
-	case 2: m_mainFrm->SetRibbonSliderLabelText(_T("32 bit mask")); m_resolution = 32; break;
+		case 0: stringTmp.LoadString(IDS_8BIT_MASK); m_resolution = 8; break;
+		case 1: stringTmp.LoadString(IDS_16BIT_MASK); m_resolution = 16; break;
+		case 2: stringTmp.LoadString(IDS_32BIT_MASK); m_resolution = 32; break;
 	};
+	m_mainFrm->SetRibbonSliderLabelText(stringTmp);
 	BitOrder();
 	m_value = 0;
 	UpdateTotal();
@@ -443,19 +453,16 @@ void CBitwiseHelperView::OnResolutionSlider()
 void CBitwiseHelperView::OnCheckMsb()
 {
 	m_app->SetDirtyBit();
-	CFont font;
-	LOGFONT lf;
-	memset(&lf, 0, sizeof(LOGFONT));
 	m_MSB_First = !m_mainFrm->GetRibbonMSBChkBoxValue();
 	m_mainFrm->SetRibbonMSBChkBoxValue(m_MSB_First);
-	if(m_MSB_First)
-		m_MSB_Label.SetWindowTextW(_T("MSB First"));
+	CString stringTmp;
+	if (m_MSB_First)
+		stringTmp.LoadString(IDS_MSB_FIRST);
 	else
-		m_MSB_Label.SetWindowTextW(_T("LSB First"));
-	
-	lf.lfHeight = 30;
-	font.CreateFontIndirectW(&lf);
-	m_MSB_Label.SetFont(&font);
+		stringTmp.LoadString(IDS_LSB_FIRST);
+
+	m_MSB_Label.SetWindowText(stringTmp);
+	m_MSB_Label.SetFont(&m_MSBFont);
 	BitOrder();
 	UpdateTotal();
 	UpdateData();
@@ -480,7 +487,7 @@ void CBitwiseHelperView::OnCheckEnableEdit()
 		for (INT16 i = 0; i < m_resolution; i++)
 		{
 			CString tmp;
-			m_edit.ElementAt(i).GetWindowTextW(tmp);
+			m_edit.ElementAt(i).GetWindowText(tmp);
 			m_doc->AppendBit(tmp);
 		}
 		m_doc->SetToWrite();
@@ -502,8 +509,10 @@ void CBitwiseHelperView::OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult)
 		if (m_tree.GetItemText(parent) != m_tree.GetItemText(root))
 			file += m_tree.GetItemText(parent) + _T("\\");		
 		file += itemText;
+		CString stringTmp;
+		stringTmp.LoadString(IDS_MY_OPEN_FILE);
 		if (m_app->IsDocDirty())
-			if (AfxMessageBox(_T("Changes not saved!\nOpen file anyway?"), MB_YESNO) == IDNO)
+			if (AfxMessageBox(stringTmp, MB_YESNO) == IDNO)
 			{
 				*pResult = 0;
 				return;

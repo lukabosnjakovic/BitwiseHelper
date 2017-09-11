@@ -13,14 +13,8 @@
 //
 
 #pragma once
-#include "CalendarBar.h"
 #include "Resource.h"
 
-class COutlookBar : public CMFCOutlookBar
-{
-	virtual BOOL AllowShowOnPaneMenu() const { return TRUE; }
-	virtual void GetPaneName(CString& strName) const { BOOL bNameValid = strName.LoadString(IDS_OUTLOOKBAR); ASSERT(bNameValid); if (!bNameValid) strName.Empty(); }
-};
 
 class CMainFrame : public CFrameWndEx
 {
@@ -58,9 +52,6 @@ protected:  // control bar embedded members
 	CMFCRibbonBar     m_wndRibbonBar;
 	CMFCRibbonApplicationButton m_MainButton;
 	CMFCToolBarImages m_PanelImages;
-	COutlookBar       m_wndNavigationBar;
-	CMFCShellTreeCtrl m_wndTree;
-	CCalendarBar      m_wndCalendar;
 	BOOL	m_chkBox_state;
 	BOOL m_edit_chkBox_state;
 	CString m_lblText;
@@ -70,13 +61,8 @@ protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	DECLARE_MESSAGE_MAP()
 
-	BOOL CreateOutlookBar(CMFCOutlookBar& bar, UINT uiID, CMFCShellTreeCtrl& tree, CCalendarBar& calendar, int nInitialWidth);
-
 	int FindFocusedOutlookWnd(CMFCOutlookBarTabCtrl** ppOutlookWnd);
 
-	CMFCOutlookBarTabCtrl* FindOutlookParent(CWnd* pWnd);
-	CMFCOutlookBarTabCtrl* m_pCurrOutlookWnd;
-	CMFCOutlookBarPane*    m_pCurrOutlookPage;
 public:
 	afx_msg void OnChkBoxUpdate(CCmdUI * pCmdUI);
 	afx_msg void OnSliderUpdate(CCmdUI * pCmdUI);

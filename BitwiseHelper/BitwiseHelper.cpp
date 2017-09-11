@@ -221,8 +221,10 @@ void CBitwiseHelperApp::OnAppAbout()
 
 void CBitwiseHelperApp::OnNewFile()
 {
+	CString stringTmp;
+	stringTmp.LoadString(IDS_MY_ON_NEW_FILE);
 	if (m_dirty_bit)
-		if (AfxMessageBox(_T("Changes not saved!\nNew file anyway?"), MB_YESNO) == IDNO)
+		if (AfxMessageBox(stringTmp, MB_YESNO) == IDNO)
 			return;
 	m_dirty_bit = FALSE;
 	CWinAppEx::OnFileNew();
@@ -230,8 +232,10 @@ void CBitwiseHelperApp::OnNewFile()
 
 void CBitwiseHelperApp::OnOpenFile()
 {
+	CString stringTmp;
+	stringTmp.LoadString(IDS_MY_ON_OPEN_FILE);
 	if (m_dirty_bit)
-		if (AfxMessageBox(_T("Changes not saved!\nOpen file anyway?"), MB_YESNO) == IDNO)
+		if (AfxMessageBox(stringTmp, MB_YESNO) == IDNO)
 			return;
 	m_dirty_bit = FALSE;
 	CWinAppEx::OnFileOpen();

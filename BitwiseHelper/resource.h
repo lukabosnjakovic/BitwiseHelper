@@ -2,9 +2,24 @@
 // Microsoft Visual C++ generated include file.
 // Used by BitwiseHelper.rc
 //
+#define IDS_16BIT_MASK                  1
+#define IDS_32BIT_MASK                  2
+#define IDS_MSB_FIRST                   3
+#define IDS_LSB_FIRST                   4
+#define IDS_MY_OPEN_FILE                5
+#define IDS_EDIT_CHECK_WARNING          6
+#define IDS_MY_NEW_FILE                 7
+#define IDS_MY_ON_NEW_FILE              8
+#define IDS_STRING9                     9
+#define IDS_MY_ON_OPEN_FILE             9
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDD_BITWISEHELPER_FORM          101
+#define IDS_NEW_BITMASK                 101
+#define IDS_TREE_ROOT_NAME              102
+#define IDS_STRING_1                    103
+#define IDS_STRING_0                    104
+#define IDS_8BIT_MASK                   105
 #define IDB_WRITESMALL                  110
 #define IDB_WRITELARGE                  111
 #define IDB_MAIN                        112

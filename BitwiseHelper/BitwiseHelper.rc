@@ -380,9 +380,9 @@ BEGIN
     EDITTEXT        IDC_EDIT_30,720,148,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
     EDITTEXT        IDC_EDIT_31,720,163,44,13,ES_AUTOHSCROLL | ES_READONLY | ES_WANTRETURN | NOT WS_BORDER | WS_GROUP,WS_EX_TRANSPARENT
     LTEXT           "MSB First",IDC_STATIC_MSB,194,193,122,36
-    LTEXT           "Decimal:",IDC_STATIC0,194,229,68,8
-    LTEXT           "Hexadecimal:",IDC_STATIC1,194,247,71,8
-    LTEXT           "Binary:",IDC_STATIC2,194,264,67,12
+    LTEXT           "Decimal:",IDC_STATIC0,194,229,68,19
+    LTEXT           "Hexadecimal:",IDC_STATIC1,194,247,71,16
+    LTEXT           "Binary:",IDC_STATIC2,194,264,67,21
     EDITTEXT        IDC_EDIT_DEC,265,229,146,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     EDITTEXT        IDC_EDIT_HEX,265,247,175,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
     EDITTEXT        IDC_EDIT_BIN,265,265,289,12,ES_AUTOHSCROLL | ES_READONLY | NOT WS_BORDER
@@ -648,6 +648,11 @@ END
 STRINGTABLE
 BEGIN
     IDP_OLE_INIT_FAILED     "OLE initialization failed.  Make sure that the OLE libraries are the correct version."
+    IDS_NEW_BITMASK         "New Bitmask"
+    IDS_TREE_ROOT_NAME      "Architecture"
+    IDS_STRING_1            "1"
+    IDS_STRING_0            "0"
+    IDS_8BIT_MASK           "8 bit mask"
 END
 
 STRINGTABLE
@@ -781,6 +786,19 @@ END
 STRINGTABLE
 BEGIN
     ID_RESOLUTION_SLIDER    "Slide to change resolution"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_16BIT_MASK          "16 bit mask"
+    IDS_32BIT_MASK          "32 bit mask"
+    IDS_MSB_FIRST           "MSB First"
+    IDS_LSB_FIRST           "LSB First"
+    IDS_MY_OPEN_FILE        "Changes not saved!\nOpen file anyway?"
+    IDS_EDIT_CHECK_WARNING  "Bitmask editing not done!\nIf you didn't start editing enable edit in ribbon.\nIf you done editing disable edit in ribbon."
+    IDS_MY_NEW_FILE         "New changes made\nOverwrite?"
+    IDS_MY_ON_NEW_FILE      "Changes not saved!\nNew file anyway?"
+    IDS_MY_ON_OPEN_FILE     "Changes not saved!\nOpen file anyway?"
 END
 
 #endif    // English (United States) resources

@@ -189,7 +189,6 @@
     <ClInclude Include="BitwiseHelper.h" />
     <ClInclude Include="BitwiseHelperDoc.h" />
     <ClInclude Include="BitwiseHelperView.h" />
-    <ClInclude Include="CalendarBar.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -199,7 +198,6 @@
     <ClCompile Include="BitwiseHelper.cpp" />
     <ClCompile Include="BitwiseHelperDoc.cpp" />
     <ClCompile Include="BitwiseHelperView.cpp" />
-    <ClCompile Include="CalendarBar.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

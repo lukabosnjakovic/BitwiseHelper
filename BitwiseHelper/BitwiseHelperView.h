@@ -93,6 +93,10 @@ protected:
 	CBitwiseHelperDoc * m_doc;
 	CBitwiseHelperApp * m_app;
 	CMainFrame * m_mainFrm;
+	LOGFONT lf;
+	CFont m_totalFont;
+	CFont m_MSBFont;
+	CFont m_DocNameFont;
 	
 public:
 	afx_msg void OnResolutionSlider();

@@ -45,9 +45,9 @@ CBitwiseHelperDoc::CBitwiseHelperDoc()
 	m_readyToWrite = FALSE;
 	m_newDoc = FALSE;
 	TCHAR tPath[100];
-	GetCurrentDirectoryW(100, tPath);
+	GetModuleFileName(NULL, tPath, 100);
 	bitmaskResPath = tPath;
-	bitmaskResPath += _T("\\bitmasks\\*");
+	bitmaskResPath.Replace(_T("\\Debug\\BitwiseHelper.exe"), _T("\\BitwiseHelper\\bitmasks\\*"));
 }
 
 CBitwiseHelperDoc::~CBitwiseHelperDoc()
@@ -123,7 +123,7 @@ BOOL CBitwiseHelperDoc::OnNewDocument()
 	// TODO: add reinitialization code here
 	// (SDI documents will reuse this document)
 	m_newDoc = TRUE;
-	m_DocName = _T("New Bitmask");
+	m_DocName.LoadString(IDS_NEW_BITMASK);
 	m_MSBFirst = TRUE;
 	m_docOpemed = FALSE;
 	m_readyToWrite = FALSE;
@@ -144,14 +144,17 @@ BOOL CBitwiseHelperDoc::OnOpenDocument(LPCTSTR lpszPathName)
 BOOL CBitwiseHelperDoc::OnSaveDocument(LPCTSTR lpszPathName)
 {
 	// TODO: Add your specialized code here and/or call the base class
+	CString stringTmp;
 	if (!m_readyToWrite)
 	{
-		AfxMessageBox(_T("Bitmask editing not done!\nIf you didn't start editing enable edit in ribbon.\nIf you done editing disable edit in ribbon."), MB_OK);
+		stringTmp.LoadString(IDS_EDIT_CHECK_WARNING);
+		AfxMessageBox(stringTmp, MB_OK);
 		return FALSE;
 	}
 	CBitwiseHelperApp * app = (CBitwiseHelperApp *)AfxGetApp();
+	stringTmp.LoadString(IDS_MY_NEW_FILE);
 	if (app->IsDocDirty() && m_docOpemed)
-		if (AfxMessageBox(_T("New changes made\nOverwrite?"), MB_YESNO) == IDNO)
+		if (AfxMessageBox(stringTmp, MB_YESNO) == IDNO)
 			return FALSE;
 	app->ClearDirtyBit();
 	return CDocument::OnSaveDocument(lpszPathName);
