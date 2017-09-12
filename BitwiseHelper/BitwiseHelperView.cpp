@@ -103,8 +103,6 @@ void CBitwiseHelperView::OnInitialUpdate()
 	m_app = (CBitwiseHelperApp *) AfxGetApp();
 	m_mainFrm = (CMainFrame*)AfxGetMainWnd();
 	
-	GetParentFrame()->RecalcLayout();
-	//ResizeParentToFit();
 	SetFonts();
 	CString stringTmp;
 	stringTmp.LoadString(IDS_NEW_BITMASK);
@@ -119,6 +117,11 @@ void CBitwiseHelperView::OnInitialUpdate()
 		FillDataFromDocument();
 	else
 		RefreshTree();
+	if(m_MSB_First)
+		stringTmp.LoadString(IDS_MSB_FIRST);
+	else
+		stringTmp.LoadString(IDS_LSB_FIRST);
+	m_MSB_Label.SetWindowText(stringTmp);
 }
 
 void CBitwiseHelperView::ChangeState(UINT nID, BOOL state)
@@ -160,8 +163,6 @@ void CBitwiseHelperView::FillDataFromDocument()
 	m_mainFrm->SetRibbonSliderLabelText(stringTmp);
 
 	SetFonts();
-	stringTmp.LoadString(IDS_MSB_FIRST);
-	m_MSB_Label.SetWindowText(stringTmp);
 }
 
 void CBitwiseHelperView::CleanForNewDoc()
