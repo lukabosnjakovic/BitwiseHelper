@@ -12,6 +12,7 @@
 #define IDS_MY_ON_NEW_FILE              8
 #define IDS_STRING9                     9
 #define IDS_MY_ON_OPEN_FILE             9
+#define IDS_BITMASKS_TEMPLATE_FOLDER    10
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
 #define IDD_BITWISEHELPER_FORM          101

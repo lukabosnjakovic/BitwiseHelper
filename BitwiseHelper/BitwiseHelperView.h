@@ -59,6 +59,8 @@ public:
 	CString GetHexValueString();
 	CString GetBinValueString();
 	void RefreshTree();
+	void SetFonts();
+	void ResizeTree();
 
 #ifdef _DEBUG
 	virtual void AssertValid() const;
@@ -104,6 +106,7 @@ public:
 	afx_msg void OnCheckEnableEdit();
 	CTreeCtrl m_tree;
 	afx_msg void OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
 
 #ifndef _DEBUG  // debug version in BitwiseHelperView.cpp

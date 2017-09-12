@@ -42,6 +42,7 @@ BEGIN_MESSAGE_MAP(CBitwiseHelperView, CFormView)
 	ON_COMMAND(ID_CHECK_MSB, &CBitwiseHelperView::OnCheckMsb)
 	ON_COMMAND(ID_CHECK_ENABLE_EDIT, &CBitwiseHelperView::OnCheckEnableEdit)
 	ON_NOTIFY(NM_DBLCLK, IDC_TREE, &CBitwiseHelperView::OnNMDblclkTree)
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 // CBitwiseHelperView construction/destruction
@@ -103,28 +104,17 @@ void CBitwiseHelperView::OnInitialUpdate()
 	m_mainFrm = (CMainFrame*)AfxGetMainWnd();
 	
 	GetParentFrame()->RecalcLayout();
-	ResizeParentToFit();
-	
-	m_total_dec.SetFont(&m_totalFont);
-	m_total_hex.SetFont(&m_totalFont);
-	m_total_bin.SetFont(&m_totalFont);
-	CStatic * myStatic;
-	myStatic = (CStatic *)GetDlgItem(IDC_STATIC0);
-	myStatic->SetFont(&m_totalFont);
-	myStatic = (CStatic *)GetDlgItem(IDC_STATIC1);
-	myStatic->SetFont(&m_totalFont);
-	myStatic = (CStatic *)GetDlgItem(IDC_STATIC2);
-	myStatic->SetFont(&m_totalFont);
-	m_MSB_Label.SetFont(&m_MSBFont);	
+	//ResizeParentToFit();
+	SetFonts();
 	CString stringTmp;
 	stringTmp.LoadString(IDS_NEW_BITMASK);
 	m_doc_name.SetWindowText(stringTmp);
-	m_doc_name.SetFont(&m_DocNameFont);
 	if (m_doc->IsNewDoc())
 		CleanForNewDoc();
 	BitOrder();
 	CleanChkBoxes();
 	m_opened_document = m_doc->IsDocOpened();
+	ResizeTree();
 	if (m_opened_document)
 		FillDataFromDocument();
 	else
@@ -169,7 +159,7 @@ void CBitwiseHelperView::FillDataFromDocument()
 	};
 	m_mainFrm->SetRibbonSliderLabelText(stringTmp);
 
-	m_MSB_Label.SetFont(&m_MSBFont);
+	SetFonts();
 	stringTmp.LoadString(IDS_MSB_FIRST);
 	m_MSB_Label.SetWindowText(stringTmp);
 }
@@ -247,6 +237,35 @@ void CBitwiseHelperView::RefreshTree()
 	FindClose(hFind);
 
 	m_tree.Expand(root, TVE_EXPAND);
+}
+
+void CBitwiseHelperView::SetFonts()
+{
+	if(!m_total_dec)
+		return;
+	m_total_dec.SetFont(&m_totalFont);
+	m_total_hex.SetFont(&m_totalFont);
+	m_total_bin.SetFont(&m_totalFont);
+	CStatic * myStatic;
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC0);
+	myStatic->SetFont(&m_totalFont);
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC1);
+	myStatic->SetFont(&m_totalFont);
+	myStatic = (CStatic *)GetDlgItem(IDC_STATIC2);
+	myStatic->SetFont(&m_totalFont);
+	m_MSB_Label.SetFont(&m_MSBFont);
+	m_doc_name.SetFont(&m_DocNameFont);
+}
+
+void CBitwiseHelperView::ResizeTree()
+{
+	if (m_tree.GetSafeHwnd() != NULL)
+	{
+		CRect windowRect;
+		GetClientRect(windowRect);
+		m_tree.MoveWindow(5, 5, 250, windowRect.bottom - 5);
+
+	}
 }
 
 void CBitwiseHelperView::MakeValue(INT16 index, BOOL state)
@@ -422,12 +441,14 @@ void CBitwiseHelperView::BitOrder()
 	}
 }
 
+#ifdef DEBUG
 
 CBitwiseHelperDoc* CBitwiseHelperView::GetDocument() const // non-debug version is inline
 {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(CBitwiseHelperDoc)));
 	return (CBitwiseHelperDoc*)m_pDocument;
 }
+#endif // DEBUG
 
 
 // CBitwiseHelperView message handlers
@@ -462,7 +483,7 @@ void CBitwiseHelperView::OnCheckMsb()
 		stringTmp.LoadString(IDS_LSB_FIRST);
 
 	m_MSB_Label.SetWindowText(stringTmp);
-	m_MSB_Label.SetFont(&m_MSBFont);
+	SetFonts();
 	BitOrder();
 	UpdateTotal();
 	UpdateData();
@@ -520,4 +541,14 @@ void CBitwiseHelperView::OnNMDblclkTree(NMHDR *pNMHDR, LRESULT *pResult)
 		m_app->OpenDocumentFile(file);
 	}
 	*pResult = 0;
+}
+
+
+void CBitwiseHelperView::OnSize(UINT nType, int cx, int cy)
+{
+	CFormView::OnSize(nType, cx, cy);
+
+	// TODO: Add your message handler code here
+	SetFonts();
+	ResizeTree();
 }
