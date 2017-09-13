@@ -48,8 +48,7 @@ CBitwiseHelperDoc::CBitwiseHelperDoc()
 	GetModuleFileName(NULL, tPath, 100);
 	bitmaskResPath = tPath;
 	CString stringTmp;
-	stringTmp.LoadString(AFX_IDS_APP_TITLE);
-	INT16 start = bitmaskResPath.Find(stringTmp);
+	INT16 start = bitmaskResPath.ReverseFind('\\');
 	bitmaskResPath.Delete(start, bitmaskResPath.GetLength() - start);
 	bitmaskResPath += stringTmp;
 	stringTmp.LoadString(IDS_BITMASKS_TEMPLATE_FOLDER);

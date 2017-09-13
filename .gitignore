@@ -7,13 +7,20 @@
 *.userosscache
 *.sln.docstates
 
+*.iobj
+*.ipdb
+Debug/*.exe
+Release/*.exe
+
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
 
 # Build results
-[Dd]ebug/
+*/[Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+!Debug/bitmasks/
+!Release/bitmasks/
+*/[Rr]elease/
 [Rr]eleases/
 x64/
 x86/
