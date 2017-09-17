@@ -1,8 +1,7 @@
 # Bitwise Helper
-
+---
 Are you embedded programmer that's using open source tools? You code for microcontrollers and you know what is bitmask?
 Than you know how confusing and difficult can be setting bits you must set if you want to use some microcontroller's peripherial.
----
 
 ### Idea
 The idea behind application is that you can have on one place all important microcontroller's registers used to enable peripherals inside microcontroller and make mask that enable what you want.
